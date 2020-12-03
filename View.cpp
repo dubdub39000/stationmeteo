@@ -12,7 +12,8 @@ QFrame(){
     mAirspeedGaugetemp = new QcGaugeWidget;
     mAirspeedGaugehumidity = new QcGaugeWidget;
     mAirspeedGaugepressure = new QcGaugeWidget;
-    initgauge(); //Appel de la méthode où sont codés les placements
+    initgauge(); //initialisation des gauges supérieur
+    inittendance();//initialisation des gauges inférieur
     setLayout(fenetre);
 }
 
@@ -27,6 +28,8 @@ void View::initgauge() {
 /*Création de la fenêtre et mise en place du thème gris */
     fenetre = new QGridLayout();
     this->setStyleSheet("background-color : grey;");
+    QList<QPair<QColor, float>> *tabcouleur=new QList<QPair<QColor, float>>;
+
 
     /************************************ TEMPERATURE ******************************************/
 
@@ -38,12 +41,8 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     QcColorBand *clrBand = mAirspeedGaugetemp->addColorBand(50);//position de la bande de couleur
     clrBand->setValueRange(0,50);//longueur de la bande sur l'arc
     mAirspeedGaugetemp->addValues(80)->setValueRange(-10,40);//range des temp
-
     lab = mAirspeedGaugetemp->addLabel(40);
-    lab->text().toStdString().substr( 0,4);
     mAirspeedGaugetemp->addLabel(70)->setText("Temp : °C");
-
-
     couleurtemp->push_back(QPair<QColor, float>(Qt::yellow, 10));
     couleurtemp->push_back(QPair<QColor, float>(Qt::green, 40));
     couleurtemp->push_back(QPair<QColor, float>(Qt::red, 50));
@@ -60,7 +59,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
     /*On ajoute la gauges à la fenêtre*/
 
-    fenetre->addWidget(mAirspeedGaugetemp,1,1);//position de la gauge dans la fenetre
+    fenetre->addWidget(mAirspeedGaugetemp,0,0);//position de la gauge dans la fenetre
 
 
 /********************************************** HUMIDITY ***************************************************/
@@ -96,7 +95,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
     /*On ajoute la gauges à la fenêtre*/
 
-    fenetre->addWidget(mAirspeedGaugehumidity,1,3);
+    fenetre->addWidget(mAirspeedGaugehumidity,0,2);
 
 /*************************************** PRESSURE ***********************************************/
 
@@ -129,7 +128,8 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
 
 /*On ajoute la gauges à la fenêtre*/
-    fenetre->addWidget(mAirspeedGaugepressure,1,2);
+    fenetre->addWidget(mAirspeedGaugepressure,0,1);
+
 
 }
 
@@ -171,9 +171,44 @@ QcLabelItem *View::getLab2() const {
     return lab2;
 }
 
+void View::inittendance() {
+    for (int i = 0; i < 3; i++) {//la boucle permet la créetion des trois gauges
+        tabgaugetend.push_back(new QcGaugeWidget);//gauge tendance temperature
+        //tabcolor.push_back(new QcColorBand);//tableau des bandes de couleur
+        auto *couleur = new QList<QPair<QColor, float>>;//tableau des couleurs composant les bandes
+        tabaiguille.push_back(new QcNeedleItem);//tableau contenant les aiguilles
 
+        tabgaugetend[i]->addArc(55);
+        tabgaugetend[i]->addDegrees(65)->setValueRange(0, 100);//longueur intervalle
+        QcColorBand *clrBandtend = tabgaugetend[i]->addColorBand(50);//position de la bande de couleur
+        clrBandtend->setValueRange(0,100);
 
+        //////////////////////////////////////////////////////////////////
 
+        fleche = tabgaugetend[i]->addLabel(40);
+        fleche->setText((QString) 61);//fleche bas 8595, fleche haut 8593
+        fleche->setColor(Qt::yellow);
+        couleur->push_back(QPair<QColor, float>(Qt::red, 50));
+        couleur->push_back(QPair<QColor, float>(Qt::green, 100));
+        clrBandtend->setColors(*couleur);
 
+        tabaiguille[i] = tabgaugetend[i]->addNeedle(60);//taille de l'aiguille
+        tabaiguille[i]->setColor(Qt::white);
+        tabaiguille[i]->setValueRange(0, 100);
+        tabgaugetend[i]->addBackground(7);
 
+        /////////////////////////////////////////////////////////////////
 
+        if (i == 0)
+        {
+            tabgaugetend[i]->addLabel(70)->setText("Tendance °C");
+        }
+        if (i == 1) {
+            tabgaugetend[i]->addLabel(70)->setText("Tendance Hpa");
+        }
+        if (i == 2) {
+            tabgaugetend[i]->addLabel(70)->setText("Tendance %");
+        }
+        fenetre->addWidget(tabgaugetend[i], 1, 0+i);
+    }
+}

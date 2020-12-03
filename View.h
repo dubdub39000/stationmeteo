@@ -16,8 +16,10 @@ class View : public QFrame
 public:
     explicit View();
     ~View();
+    void initgauge();
+    void inittendance();
 
-    QList<QPair<QColor, float>> *couleur;
+
     QcGaugeWidget *getMAirspeedGaugetemp() const;
     QcGaugeWidget *getMAirspeedGaugehumidity() const;
     QcGaugeWidget *getMAirspeedGaugepressure() const;
@@ -29,7 +31,6 @@ public:
     QcNeedleItem *getMAirspeedNeedletemp() const;
     QcNeedleItem *getMAirspeedNeedlehum() const;
     QcNeedleItem *getMAirspeedNeedlepres() const;
-    void initgauge();
 
 private:
 
@@ -48,6 +49,11 @@ private:
     QcLabelItem *lab;
     QcLabelItem *lab1;
     QcLabelItem *lab2;
+
+    QVector<QcGaugeWidget*> tabgaugetend;//tableau contenant le gauges
+    QVector<QcNeedleItem*> tabaiguille;
+    QcLabelItem *fleche; //la fleche des tendances présente sous les trois gauges de tendances
+
 };
 
 #endif //STATIONMETEO_VIEW_H
