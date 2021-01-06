@@ -185,23 +185,21 @@ void View::inittendance() {
 
         //////////////////////////////////////////////////////////////////
 
-        fleche = tabgaugetend[i]->addLabel(40);
-        fleche->setText((QString) 61);//fleche bas 8595, fleche haut 8593
-        fleche->setColor(Qt::yellow);
         couleur->push_back(QPair<QColor, float>(Qt::red, 50));
         couleur->push_back(QPair<QColor, float>(Qt::green, 100));
         clrBandtend->setColors(*couleur);
 
         tabaiguille[i] = tabgaugetend[i]->addNeedle(60);//taille de l'aiguille
         tabaiguille[i]->setColor(Qt::white);
-        tabaiguille[i]->setValueRange(0, 100);
+        tabaiguille[i]->setValueRange(-100, 100);//range permettant d'avoir des valeurs de tendances négatives
+        tabaiguille[i]->setCurrentValue(0);//place l'aiguille au milieu par défaut
         tabgaugetend[i]->addBackground(7);
 
         /////////////////////////////////////////////////////////////////
 
         if (i == 0)
         {
-            tabgaugetend[i]->addLabel(70)->setText("Tendance °C");
+            tabgaugetend[i]->addLabel(70)->setText("Tendance C°");
         }
         if (i == 1) {
             tabgaugetend[i]->addLabel(70)->setText("Tendance Hpa");
@@ -211,4 +209,35 @@ void View::inittendance() {
         }
         fenetre->addWidget(tabgaugetend[i], 1, 0+i);
     }
+////////////////sortie de boucle/////////////
+    flechetemp = tabgaugetend[0]->addLabel(40);
+    flechetemp->setText((QString) 61);//fleche bas 8595, fleche haut 8593
+
+    flechepress = tabgaugetend[1]->addLabel(40);
+    flechepress->setText((QString) 61);//fleche bas 8595, fleche haut 8593
+
+    flechehum = tabgaugetend[2]->addLabel(40);
+    flechehum->setText((QString) 61);//fleche bas 8595, fleche haut 8593
+
+}
+
+const QVector<QcNeedleItem *> &View::getTabaiguille() const {
+    return tabaiguille;
+}
+
+
+const QVector<QcGaugeWidget *> &View::getTabgaugetend() const {
+    return tabgaugetend;
+}
+
+QcLabelItem *View::getFlechetemp() const {
+    return flechetemp;
+}
+
+QcLabelItem *View::getFlechepress() const {
+    return flechepress;
+}
+
+QcLabelItem *View::getFlechehum() const {
+    return flechehum;
 }

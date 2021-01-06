@@ -52,8 +52,16 @@ private:
 
     QVector<QcGaugeWidget*> tabgaugetend;//tableau contenant le gauges
     QVector<QcNeedleItem*> tabaiguille;
-    QcLabelItem *fleche; //la fleche des tendances présente sous les trois gauges de tendances
+    QcLabelItem *flechetemp; //la fleche des tendances présente sous les trois gauges de tendances
+    QcLabelItem *flechepress;
+    QcLabelItem *flechehum;
+public:
+    const QVector<QcNeedleItem *> &getTabaiguille() const;
+    const QVector<QcGaugeWidget *> &getTabgaugetend() const;
 
+    QcLabelItem *getFlechetemp() const;
+    QcLabelItem *getFlechepress() const;
+    QcLabelItem *getFlechehum() const;
 };
 
 #endif //STATIONMETEO_VIEW_H
