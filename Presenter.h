@@ -10,6 +10,8 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtCore/QTimer>
 #include "View.h"
+#include "Setting.h"
+#include <chrono>
 
 class Presenter : public QObject {
 Q_OBJECT
@@ -17,6 +19,7 @@ private:
     QSerialPort *serial;
     QTimer *timer;
     View *fenetre;
+    Setting *setting;
     float Temp;
     float Pressure;
     float Humidity;
@@ -38,6 +41,11 @@ private:
     float Chum;
     float Dhum;
     float numeroofdatahum=1;
+
+    int dureetendance;//nombre max de trame traitéé
+    int dureerefresh;//durée du timer entre deux traitements
+
+
 public:
     Presenter();
     virtual ~Presenter();
@@ -49,10 +57,17 @@ public:
     float calculpress(const float *data);
     float calculhum(const float *data);
 
+    ///////////////gestion fenêtre view///////////////////////
+
     void MAJtendtemp(); //met  à jour la gauge tendance temp
     void MAJtendpress(); //met  à jour la gauge tendance pression
     void MAJtendhum(); //met  à jour la gauge tendance humidité
-};
 
+    ///////////////gestion fenêtre setting/////////////////
+    void opensettingview();// permet d'afficher la fenetre des setting, elle s'initialise au lancement de l'appli
+    void closesettingview();
+    void MAJparameter();// permet de prendre les valeurs de setting et les inclure dans view
+    void rafraichissementtend();// remet à zero l'ensemble des variables de calcul de tendance
+};
 
 #endif //STATIONMETEO_PRESENTER_H

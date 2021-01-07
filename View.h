@@ -8,6 +8,7 @@
 #include "FenêtreGauge.h"
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QPushButton>
 
 class View : public QFrame
 {
@@ -55,6 +56,8 @@ private:
     QcLabelItem *flechetemp; //la fleche des tendances présente sous les trois gauges de tendances
     QcLabelItem *flechepress;
     QcLabelItem *flechehum;
+
+    QPushButton *setting;//boutton des setting de la fenêtre principale
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
     const QVector<QcGaugeWidget *> &getTabgaugetend() const;
@@ -62,6 +65,8 @@ public:
     QcLabelItem *getFlechetemp() const;
     QcLabelItem *getFlechepress() const;
     QcLabelItem *getFlechehum() const;
+
+    QPushButton *getSetting() const;
 };
 
 #endif //STATIONMETEO_VIEW_H

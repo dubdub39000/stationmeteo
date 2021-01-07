@@ -12,6 +12,8 @@ QFrame(){
     mAirspeedGaugetemp = new QcGaugeWidget;
     mAirspeedGaugehumidity = new QcGaugeWidget;
     mAirspeedGaugepressure = new QcGaugeWidget;
+    setting = new QPushButton("setting");
+    setting->setObjectName("setting");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
     setLayout(fenetre);
@@ -28,7 +30,7 @@ void View::initgauge() {
 /*Création de la fenêtre et mise en place du thème gris */
     fenetre = new QGridLayout();
     this->setStyleSheet("background-color : grey;");
-    QList<QPair<QColor, float>> *tabcouleur=new QList<QPair<QColor, float>>;
+    //QList<QPair<QColor, float>> *tabcouleur=new QList<QPair<QColor, float>>;
 
 
     /************************************ TEMPERATURE ******************************************/
@@ -60,7 +62,6 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     /*On ajoute la gauges à la fenêtre*/
 
     fenetre->addWidget(mAirspeedGaugetemp,0,0);//position de la gauge dans la fenetre
-
 
 /********************************************** HUMIDITY ***************************************************/
 
@@ -130,7 +131,9 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 /*On ajoute la gauges à la fenêtre*/
     fenetre->addWidget(mAirspeedGaugepressure,0,1);
 
+    /*creation du bouton setting*/
 
+    fenetre->addWidget(setting,1,3);
 }
 
 
@@ -207,7 +210,7 @@ void View::inittendance() {
         if (i == 2) {
             tabgaugetend[i]->addLabel(70)->setText("Tendance %");
         }
-        fenetre->addWidget(tabgaugetend[i], 1, 0+i);
+        fenetre->addWidget(tabgaugetend[i], 2, 0+i);
     }
 ////////////////sortie de boucle/////////////
     flechetemp = tabgaugetend[0]->addLabel(40);
@@ -240,4 +243,8 @@ QcLabelItem *View::getFlechepress() const {
 
 QcLabelItem *View::getFlechehum() const {
     return flechehum;
+}
+
+QPushButton *View::getSetting() const {
+    return setting;
 }
