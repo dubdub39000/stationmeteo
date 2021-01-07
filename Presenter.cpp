@@ -37,7 +37,7 @@ Presenter::Presenter(){
     fenetre->show();
     setting = new Setting;
     timer=new QTimer();
-    timer->start(2000);//la première trame Json est incomplète donc on delay
+    timer->start(1000);//la première trame Json est incomplète donc on delay
     dureerefresh = 2000;
     dureetendance = 100;
  /////////////////connnecteur///////////////////
