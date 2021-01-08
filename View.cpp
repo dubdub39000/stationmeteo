@@ -3,6 +3,7 @@
 //
 
 #include "View.h"
+#include <QDebug>
 
 
 View::View() :
@@ -29,9 +30,7 @@ void View::initgauge() {
 
 /*Création de la fenêtre et mise en place du thème gris */
     fenetre = new QGridLayout();
-    this->setStyleSheet("background-color : grey;");
-    //QList<QPair<QColor, float>> *tabcouleur=new QList<QPair<QColor, float>>;
-
+    this->setStyleSheet("background-color : darkgrey");
 
     /************************************ TEMPERATURE ******************************************/
 
@@ -247,4 +246,16 @@ QcLabelItem *View::getFlechehum() const {
 
 QPushButton *View::getSetting() const {
     return setting;
+}
+
+void View::MAJcolor(int nbr) {
+    switch (nbr) {
+        case 1:
+            this->setStyleSheet("background-color : darkgrey;");
+            break;
+        case 2:
+            this->setStyleSheet("background-color : white;");
+            break;
+    }
+    this->repaint();
 }

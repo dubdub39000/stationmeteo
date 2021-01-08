@@ -58,6 +58,7 @@ private:
     QcLabelItem *flechehum;
 
     QPushButton *setting;//boutton des setting de la fenêtre principale
+
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
     const QVector<QcGaugeWidget *> &getTabgaugetend() const;
@@ -65,8 +66,9 @@ public:
     QcLabelItem *getFlechetemp() const;
     QcLabelItem *getFlechepress() const;
     QcLabelItem *getFlechehum() const;
-
     QPushButton *getSetting() const;
+
+    void MAJcolor(int nbr);
 };
 
 #endif //STATIONMETEO_VIEW_H

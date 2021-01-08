@@ -11,6 +11,7 @@
 #include <QtCore/QTimer>
 #include "View.h"
 #include "Setting.h"
+#include "Jute.h"
 #include <chrono>
 
 class Presenter : public QObject {
@@ -23,39 +24,24 @@ private:
     float Temp;
     float Pressure;
     float Humidity;
-
-    float Btemp; // somme des data reçu pour la temperature
-    float Atemp; //somme des indexs de la temperature
-    float Dtemp; //somme du carré des index de la temperature
-    float Ctemp; // somme du produit de data et de son index de la temperature
-    float numberofdatatemp=1; //nombre de data recu pour la temperature
-
-    float Apress;
-    float Bpress;
-    float Cpress;
-    float Dpress;
-    float numeroofdatapress=1;
-
-    float Ahum;
-    float Bhum;
-    float Chum;
-    float Dhum;
-    float numeroofdatahum=1;
-
     int dureetendance;//nombre max de trame traitéé
     int dureerefresh;//durée du timer entre deux traitements
 
+    QVector<float> *tabtemp;
+    QVector<float> *tabpress;
+    QVector<float> *tabhum;
 
+    bool keepwindows;//  permet de maintenir la fenetre active si erreur de saisie
 public:
     Presenter();
     virtual ~Presenter();
 
     void init();
     void recupJson();
-    void MAJprm(QString *cmd);//met a jour les valeurs des capteurs
-    float calcultemp(const float *data);
-    float calculpress(const float *data);
-    float calculhum(const float *data);
+    void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
+    ////////////////gestion de la trame JSON avec exception//////////////////
+
+    void trameJson(QString *cmd); //methode pour éliminer les trame invalide
 
     ///////////////gestion fenêtre view///////////////////////
 
@@ -65,9 +51,14 @@ public:
 
     ///////////////gestion fenêtre setting/////////////////
     void opensettingview();// permet d'afficher la fenetre des setting, elle s'initialise au lancement de l'appli
-    void closesettingview();
+    void closebyvalidersetting();//on cache la fenêtre en cas de validation
+    void closbyannulersetting();//on ferme la fenêtre setting
     void MAJparameter();// permet de prendre les valeurs de setting et les inclure dans view
     void rafraichissementtend();// remet à zero l'ensemble des variables de calcul de tendance
+
+   ////////////////calcul tendance/////////////////////
+   void inittab(); //initialize les tableau dynamique
+    float calcultendance(QVector<float> *tab, float *donnee);
 };
 
 #endif //STATIONMETEO_PRESENTER_H

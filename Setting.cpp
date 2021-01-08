@@ -2,6 +2,7 @@
 // Created by j.mailly on 07/01/2021.
 //
 
+
 #include "Setting.h"
 
 Setting::Setting() {
@@ -12,6 +13,7 @@ Setting::Setting() {
 
 Setting::~Setting() {
     delete settingview;
+    delete erreur;
 }
 
 void Setting::inittsetting() {
@@ -23,22 +25,33 @@ void Setting::inittsetting() {
     settingview->addWidget(valeur,1,3);
     dureetendance = new QLabel("nombre max de données utilisées pour la tendance");
     settingview->addWidget(dureetendance,2,0);
+    rangetendance = new QLabel("doit être supérieur à 10");
+    settingview->addWidget(rangetendance,3,0);
     valeurtendance = new QLineEdit;
     valeurtendance->setText("100");
     settingview->addWidget(valeurtendance,2,3);
     dureerafraichissement = new QLabel("durée rafraichisement en s");
-    settingview->addWidget(dureerafraichissement,3,0);
+    settingview->addWidget(dureerafraichissement,4,0);
+    rangerefresh = new QLabel("doit être superieur à  1");
+    settingview->addWidget(rangerefresh,5,0);
     valeurrafraichissement = new QLineEdit;
     valeurrafraichissement->setText("2");
-    settingview->addWidget(valeurrafraichissement,3,3);
-
+    settingview->addWidget(valeurrafraichissement,4,3);
     valider = new QPushButton("valider");
     valider->setObjectName("valider");
-    settingview->addWidget(valider,4,0);
+    settingview->addWidget(valider,7,0);
+
+    test = new QVariant;
+    choixcouleur = new QComboBox;
+    choixcouleur->addItem("grey", *test);
+    choixcouleur->addItem("white",*test);
+    couleur = new QLabel("couleur du fond");
+    settingview->addWidget(couleur,6,2);
+    settingview->addWidget(choixcouleur,6,3);
 
     annuler = new QPushButton("annuler");
     annuler->setObjectName("annuler");
-    settingview->addWidget(annuler,4,2);
+    settingview->addWidget(annuler,7,2);
 }
 
 QPushButton *Setting::getValider() const {
@@ -57,4 +70,31 @@ QLineEdit *Setting::getValeurrafraichissement() const {
     return valeurrafraichissement;
 }
 
+void Setting::affichageerreur(int nbr) {
+    switch (nbr) {
+        case 1:
+            erreur = new QLabel("Erreur de saisie");
+            settingview->addWidget(erreur,3,3);
+            break;
+        case 2:
+            erreur = new QLabel("Erreur de saisie");
+            settingview->addWidget(erreur,5,3);
+            break;
+        case 3:
+            erreur = new QLabel("valeur hors range de la tendance");
+            settingview->addWidget(erreur,3,3);
+            break;
+        case 4:
+            erreur = new QLabel("valeur hors range du rafraichissement");
+            settingview->addWidget(erreur,5,3);
+            break;
+    }
+}
 
+void Setting::MAJsetting() {
+    erreur->clear();
+}
+
+QComboBox *Setting::getChoixcouleur() const {
+    return choixcouleur;
+}
