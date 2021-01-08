@@ -26,7 +26,8 @@ private:
     QLabel *valeur;
     QLabel *titre;
     QLabel *dureetendance;
-    QLabel *erreur;
+    QLabel *erreursaisie;
+    QLabel *erreurrange;
     QLabel *dureerafraichissement;
     QLabel *rangetendance;
     QLabel *rangerefresh;

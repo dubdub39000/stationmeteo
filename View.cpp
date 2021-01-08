@@ -252,9 +252,21 @@ void View::MAJcolor(int nbr) {
     switch (nbr) {
         case 1:
             this->setStyleSheet("background-color : darkgrey;");
+            mAirspeedNeedletemp->setColor(Qt::white);
+            mAirspeedNeedlepres->setColor(Qt::white);
+            mAirspeedNeedlehum->setColor(Qt::white);
+            for (int i = 0; i < 3; ++i) {
+                tabaiguille[i]->setColor(Qt::white);
+            }
             break;
         case 2:
             this->setStyleSheet("background-color : white;");
+            mAirspeedNeedletemp->setColor(Qt::black);
+            mAirspeedNeedlepres->setColor(Qt::black);
+            mAirspeedNeedlehum->setColor(Qt::black);
+            for (int i = 0; i < 3; ++i) {
+                tabaiguille[i]->setColor(Qt::black);
+            }
             break;
     }
     this->repaint();

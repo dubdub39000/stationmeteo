@@ -13,7 +13,8 @@ Setting::Setting() {
 
 Setting::~Setting() {
     delete settingview;
-    delete erreur;
+    delete erreursaisie;
+    delete erreurrange;
 }
 
 void Setting::inittsetting() {
@@ -40,7 +41,8 @@ void Setting::inittsetting() {
     valider = new QPushButton("valider");
     valider->setObjectName("valider");
     settingview->addWidget(valider,7,0);
-
+    erreursaisie = new QLabel("Erreur de saisie");
+    erreurrange = new QLabel("valeur hors range");
     test = new QVariant;
     choixcouleur = new QComboBox;
     choixcouleur->addItem("grey", *test);
@@ -73,26 +75,23 @@ QLineEdit *Setting::getValeurrafraichissement() const {
 void Setting::affichageerreur(int nbr) {
     switch (nbr) {
         case 1:
-            erreur = new QLabel("Erreur de saisie");
-            settingview->addWidget(erreur,3,3);
+            settingview->addWidget(erreursaisie,3,3);
             break;
         case 2:
-            erreur = new QLabel("Erreur de saisie");
-            settingview->addWidget(erreur,5,3);
+            settingview->addWidget(erreursaisie,5,3);
             break;
         case 3:
-            erreur = new QLabel("valeur hors range de la tendance");
-            settingview->addWidget(erreur,3,3);
+            settingview->addWidget(erreurrange,3,3);
             break;
         case 4:
-            erreur = new QLabel("valeur hors range du rafraichissement");
-            settingview->addWidget(erreur,5,3);
+            settingview->addWidget(erreurrange,5,3);
             break;
     }
 }
 
 void Setting::MAJsetting() {
-    erreur->clear();
+    erreurrange->clear();
+    erreursaisie->clear();
 }
 
 QComboBox *Setting::getChoixcouleur() const {
