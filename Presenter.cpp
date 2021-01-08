@@ -249,8 +249,6 @@ void Presenter::MAJparameter() {
         dureerefresh = temp2;
         keepwindows = true;// on remet a 1 pour pouvoir revalider arpès une erreur
     }
-    qDebug()<<temp1;
-    qDebug()<<temp2;
     ///////////////////paramètre coulor////////////////////
     if (setting->getChoixcouleur()->currentText() == "grey"){
         fenetre->MAJcolor(1);
