@@ -266,6 +266,7 @@ void Presenter::closebyvalidersetting() {
 }
 
 void Presenter::closbyannulersetting() {
+    setting->MAJsetting();
 setting->hide();
 }
 /////////////////////////////////////////reinit des valeurs//////////////////////
