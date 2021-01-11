@@ -9,6 +9,7 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
 
 class View : public QFrame
 {
@@ -58,6 +59,7 @@ private:
     QcLabelItem *flechehum;
 
     QPushButton *setting;//boutton des setting de la fenêtre principale
+    QLabel *connect;// message d'erreur de perte de connexion
 
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
@@ -69,6 +71,7 @@ public:
     QPushButton *getSetting() const;
 
     void MAJcolor(int nbr);
+    void connexion(); //methode permettant de manipuler le message de perte de connexion.
 };
 
 #endif //STATIONMETEO_VIEW_H

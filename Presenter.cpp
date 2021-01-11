@@ -64,6 +64,13 @@ Presenter::~Presenter() {
 void Presenter::recupJson() {
     QString rxBytes;
     rxBytes.append(serial->readAll());
+    try {
+        if (rxBytes==""){
+            throw overflow_error("Connect lost");
+        }
+    } catch (overflow_error &cl) {
+        fenetre->connexion();//affiche message d'erreur dans la fenetre
+    }
     int end = rxBytes.lastIndexOf("\r\n");
     QStringList cmds = QString(rxBytes.mid(0, end)).split("\r\n", QString::SkipEmptyParts);
     rxBytes = rxBytes.mid(end);//permet de positionner le début la chaine au début de trame suivante
@@ -74,14 +81,18 @@ void Presenter::recupJson() {
 
 void Presenter::trameJson(QString *cmd) {
     jute::jValue v;
+    timer->start(dureerefresh);//durée de rafraichissement
     try { //début code sous exception
         if (cmd->mid(0, 8).toStdString().find('Temp') && cmd->toStdString().size() >= 51
             && cmd->toStdString().size() <= 55) {//ensemble de conditions pour ne prendre que les trames JSON valide
             qDebug() << *cmd;
-            timer->start(dureerefresh);//durée de rafraichissement
-           v  = jute::parser::parse(cmd->toStdString());//le parser permet de découper la trame
+            v = jute::parser::parse(cmd->toStdString());//le parser permet de découper la trame
         }
-    } catch (overflow_error) {
+        else {
+            throw overflow_error("trame invalide\n");
+        }
+    } catch (overflow_error &oe) {
+        qDebug()<<oe.what();
     }
     MAJprm(v);
 }
@@ -236,13 +247,14 @@ void Presenter::MAJparameter() {
     /////////////////////paramètre tendance/////////////////
     if (temp1 < 10) {
         setting->affichageerreur(1);
+        qDebug() << temp1;
         keepwindows = false;
+    }
         ///////////////////paramètre refresh///////////////////
-        if (temp2 <= 0) {
+        if (temp2 < 1) {
             setting->affichageerreur(2);
             keepwindows = false;
         }
-    }
     ////////////////si pas d'erreur de saisie///////////////////
     else {
         dureetendance = temp1;

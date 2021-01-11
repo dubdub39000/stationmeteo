@@ -15,8 +15,12 @@ QFrame(){
     mAirspeedGaugepressure = new QcGaugeWidget;
     setting = new QPushButton("setting");
     setting->setObjectName("setting");
+    connect = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
+    connect->setStyleSheet("color : red");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
+    fenetre->addWidget(connect,1,1);
+    connect->hide();
     setLayout(fenetre);
 }
 
@@ -271,3 +275,8 @@ void View::MAJcolor(int nbr) {
     }
     this->repaint();
 }
+
+void View::connexion() {
+    connect->show();
+}
+

@@ -42,7 +42,6 @@ void Setting::inittsetting() {
     valider->setObjectName("valider");
     settingview->addWidget(valider,7,0);
     erreursaisie = new QLabel("Erreur de saisie");
-    erreurrange = new QLabel("valeur hors range");
     test = new QVariant;
     choixcouleur = new QComboBox;
     choixcouleur->addItem("grey", *test);
@@ -76,22 +75,17 @@ void Setting::affichageerreur(int nbr) {
     switch (nbr) {
         case 1:
             settingview->addWidget(erreursaisie,3,3);
+            erreursaisie->show();
             break;
         case 2:
             settingview->addWidget(erreursaisie,5,3);
-            break;
-        case 3:
-            settingview->addWidget(erreurrange,3,3);
-            break;
-        case 4:
-            settingview->addWidget(erreurrange,5,3);
+            erreursaisie->show();
             break;
     }
 }
 
 void Setting::MAJsetting() {
-    erreurrange->clear();
-    erreursaisie->clear();
+    erreursaisie->hide();
 }
 
 QComboBox *Setting::getChoixcouleur() const {
