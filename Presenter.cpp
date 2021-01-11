@@ -245,13 +245,14 @@ void Presenter::MAJparameter() {
     temp1 = setting->getValeurtendance()->text().toInt();
     temp2 = setting->getValeurrafraichissement()->text().toInt() * 1000;//pour mettre en seconde
     /////////////////////paramètre tendance/////////////////
+
     if (temp1 < 10) {
         setting->affichageerreur(1);
         qDebug() << temp1;
         keepwindows = false;
     }
         ///////////////////paramètre refresh///////////////////
-        if (temp2 < 1) {
+    else if (temp2 < 1) {
             setting->affichageerreur(2);
             keepwindows = false;
         }
