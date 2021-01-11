@@ -105,21 +105,22 @@ void Presenter::MAJprm(jute::jValue v) {
             fenetre->getMAirspeedNeedletemp()->setCurrentValue(Temp);//modifie la valeur de l'aiguille
             fenetre->getLab()->setText(fenetre->getLab()->text().mid(0, fenetre->getLab()->text().toStdString().find('.') + 2));
             fenetre->getMAirspeedGaugetemp()->repaint();
-            MAJtendtemp();
-
+            //MAJtendtemp();
+            MAJtend(tabtemp, &Temp, 0);
             /////////////Pressure//////////////
             Pressure = v["Pressure"].as_double();
             fenetre->getMAirspeedNeedlepres()->setCurrentValue(Pressure);
             fenetre->getLab2()->setText(fenetre->getLab2()->text().mid(0, fenetre->getLab2()->text().toStdString().find('.') + 3));//permet à l'affichage de ne mettre que deux décimals
             fenetre->getMAirspeedGaugepressure()->repaint();
-            MAJtendpress();
-
+            //MAJtendpress();
+            MAJtend(tabpress, &Pressure, 1);
             ////////////////Humidity/////////////
             Humidity = v["Humidity"].as_double();
             fenetre->getMAirspeedNeedlehum()->setCurrentValue(Humidity);
             fenetre->getLab1()->setText(fenetre->getLab1()->text().mid(0, fenetre->getLab1()->text().toStdString().find('.') + 3));
             fenetre->getMAirspeedGaugehumidity()->repaint();
-            MAJtendhum();
+            //MAJtendhum();
+            MAJtend(tabhum, &Humidity,2);
         } else
         {
             rafraichissementtend();
@@ -128,70 +129,32 @@ void Presenter::MAJprm(jute::jValue v) {
 
 ////////////////////mise a jour des gauges tendance////////////
 
-void Presenter::MAJtendtemp() {
+void Presenter::MAJtend(QVector<float> *tabtend,float *donnee, int index) {
+    float  coef = calcultendance(tabtend, donnee);//obligé car le temps de traitement de l'opération est trop long pour répéter l'appel de la fonction
 
-    float coeftemp = calcultendance(tabtemp, &Temp)*10;//obligé car le temps de traitement de l'opération est trop long pour répéter l'appel de la fonction
-    fenetre->getTabaiguille()[0]->setCurrentValue(coeftemp);//calcul la tendance
-
-    if (coeftemp > 0 ) {
-        fenetre->getFlechetemp()->setText((QString) 8593);
-        fenetre->getFlechetemp()->setColor(Qt::green);
+    if (index == 0 || index == 2){
+        coef = coef*10;
     }
-    else if(coeftemp < 0) {
-        fenetre->getFlechetemp()->setText((QString) 8595);
-        fenetre->getFlechetemp()->setColor(Qt::red);
+    fenetre->getTabaiguille()[index]->setCurrentValue(coef);//calcul la tendance
+
+    if (coef > 0) {
+        fenetre->getFleche()[index]->setText((QString) 8593);
+        fenetre->getFleche()[index]->setColor(Qt::green);
+    }
+    else if(coef < 0) {
+        fenetre->getFleche()[index]->setText((QString) 8595);
+        fenetre->getFleche()[index]->setColor(Qt::red);
     }
     else {
-        fenetre->getFlechetemp()->setText((QString) 61);
-        fenetre->getFlechetemp()->setColor(Qt::yellow);
+        fenetre->getFleche()[index]->setText((QString) 61);
+        fenetre->getFleche()[index]->setColor(Qt::yellow);
     }
 
-    fenetre->getTabgaugetend()[0]->repaint();//indice 0 correspond à l'index du tableau de widget pour la temp
+    fenetre->getTabgaugetend()[index]->repaint();//indice 0 correspond à l'index du tableau de widget pour la temp
 
 }
 
-void Presenter::MAJtendpress() {
-    float coefpress = calcultendance(tabpress, &Pressure);//obligé car le temps de traitement de l'opération est trop long pour répéter l'appel de la fonction
 
-    fenetre->getTabaiguille()[1]->setCurrentValue(coefpress);//calcul la tendance
-
-    if (coefpress > 0 ) {
-        fenetre->getFlechepress()->setText((QString) 8593);
-        fenetre->getFlechepress()->setColor(Qt::green);
-    }
-    else if(coefpress < 0) {
-        fenetre->getFlechepress()->setText((QString) 8595);
-        fenetre->getFlechepress()->setColor(Qt::red);
-    }
-    else {
-        fenetre->getFlechepress()->setText((QString) 61);
-        fenetre->getFlechepress()->setColor(Qt::yellow);
-    }
-
-    fenetre->getTabgaugetend()[1]->repaint();//indice 0 correspond à l'index du tableau de widget pour la temp
-}
-
-void Presenter::MAJtendhum() {
-    float  coefhum = calcultendance(tabhum, &Humidity)*10;//obligé car le temps de traitement de l'opération est trop long pour répéter l'appel de la fonction
-
-    fenetre->getTabaiguille()[2]->setCurrentValue(coefhum);//calcul la tendance
-
-    if (coefhum > 0) {
-        fenetre->getFlechehum()->setText((QString) 8593);
-        fenetre->getFlechehum()->setColor(Qt::green);
-    }
-    else if(coefhum < 0) {
-        fenetre->getFlechehum()->setText((QString) 8595);
-        fenetre->getFlechehum()->setColor(Qt::red);
-    }
-    else {
-        fenetre->getFlechehum()->setText((QString) 61);
-        fenetre->getFlechehum()->setColor(Qt::yellow);
-    }
-
-    fenetre->getTabgaugetend()[2]->repaint();//indice 0 correspond à l'index du tableau de widget pour la temp
-
-}
 ///////////////////////////calcul des tendances//////////////////////
 float Presenter::calcultendance(QVector <float> *tab, float *donnee) {
     //qDebug()<<"test";
@@ -288,3 +251,5 @@ void Presenter::rafraichissementtend() {//on clear les tableaux et on réinit
     tabpress->clear();
     inittab();
 }
+
+

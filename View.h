@@ -54,9 +54,7 @@ private:
 
     QVector<QcGaugeWidget*> tabgaugetend;//tableau contenant le gauges
     QVector<QcNeedleItem*> tabaiguille;
-    QcLabelItem *flechetemp; //la fleche des tendances présente sous les trois gauges de tendances
-    QcLabelItem *flechepress;
-    QcLabelItem *flechehum;
+    QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
 
     QPushButton *setting;//boutton des setting de la fenêtre principale
     QLabel *connect;// message d'erreur de perte de connexion
@@ -64,11 +62,10 @@ private:
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
     const QVector<QcGaugeWidget *> &getTabgaugetend() const;
+    const QVector<QcLabelItem *> &getFleche() const;
 
-    QcLabelItem *getFlechetemp() const;
-    QcLabelItem *getFlechepress() const;
-    QcLabelItem *getFlechehum() const;
     QPushButton *getSetting() const;
+
 
     void MAJcolor(int nbr);
     void connexion(); //methode permettant de manipuler le message de perte de connexion.

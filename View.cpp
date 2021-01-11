@@ -214,17 +214,10 @@ void View::inittendance() {
             tabgaugetend[i]->addLabel(70)->setText("Tendance %");
         }
         fenetre->addWidget(tabgaugetend[i], 2, 0+i);
+
+        fleche.push_back(tabgaugetend[i]->addLabel(40));
+        fleche[i]->setText((QString) 61);
     }
-////////////////sortie de boucle/////////////
-    flechetemp = tabgaugetend[0]->addLabel(40);
-    flechetemp->setText((QString) 61);//fleche bas 8595, fleche haut 8593
-
-    flechepress = tabgaugetend[1]->addLabel(40);
-    flechepress->setText((QString) 61);//fleche bas 8595, fleche haut 8593
-
-    flechehum = tabgaugetend[2]->addLabel(40);
-    flechehum->setText((QString) 61);//fleche bas 8595, fleche haut 8593
-
 }
 
 const QVector<QcNeedleItem *> &View::getTabaiguille() const {
@@ -234,18 +227,6 @@ const QVector<QcNeedleItem *> &View::getTabaiguille() const {
 
 const QVector<QcGaugeWidget *> &View::getTabgaugetend() const {
     return tabgaugetend;
-}
-
-QcLabelItem *View::getFlechetemp() const {
-    return flechetemp;
-}
-
-QcLabelItem *View::getFlechepress() const {
-    return flechepress;
-}
-
-QcLabelItem *View::getFlechehum() const {
-    return flechehum;
 }
 
 QPushButton *View::getSetting() const {
@@ -278,5 +259,9 @@ void View::MAJcolor(int nbr) {
 
 void View::connexion() {
     connect->show();
+}
+
+const QVector<QcLabelItem *> &View::getFleche() const {
+    return fleche;
 }
 

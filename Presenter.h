@@ -45,9 +45,7 @@ public:
 
     ///////////////gestion fenêtre view///////////////////////
 
-    void MAJtendtemp(); //met  à jour la gauge tendance temp
-    void MAJtendpress(); //met  à jour la gauge tendance pression
-    void MAJtendhum(); //met  à jour la gauge tendance humidité
+    void MAJtend(QVector<float> *tabtend,float *donnee, int index);
 
     ///////////////gestion fenêtre setting/////////////////
     void opensettingview();// permet d'afficher la fenetre des setting, elle s'initialise au lancement de l'appli
