@@ -3,6 +3,7 @@
 //
 
 #include "View.h"
+#include <QDebug>
 
 
 View::View() :
@@ -14,8 +15,12 @@ QFrame(){
     mAirspeedGaugepressure = new QcGaugeWidget;
     setting = new QPushButton("setting");
     setting->setObjectName("setting");
+    connect = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
+    connect->setStyleSheet("color : red");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
+    fenetre->addWidget(connect,1,1);
+    connect->hide();
     setLayout(fenetre);
 }
 
@@ -29,9 +34,7 @@ void View::initgauge() {
 
 /*Création de la fenêtre et mise en place du thème gris */
     fenetre = new QGridLayout();
-    this->setStyleSheet("background-color : grey;");
-    //QList<QPair<QColor, float>> *tabcouleur=new QList<QPair<QColor, float>>;
-
+    this->setStyleSheet("background-color : darkgrey");
 
     /************************************ TEMPERATURE ******************************************/
 
@@ -248,3 +251,32 @@ QcLabelItem *View::getFlechehum() const {
 QPushButton *View::getSetting() const {
     return setting;
 }
+
+void View::MAJcolor(int nbr) {
+    switch (nbr) {
+        case 1:
+            this->setStyleSheet("background-color : darkgrey;");
+            mAirspeedNeedletemp->setColor(Qt::white);
+            mAirspeedNeedlepres->setColor(Qt::white);
+            mAirspeedNeedlehum->setColor(Qt::white);
+            for (int i = 0; i < 3; ++i) {
+                tabaiguille[i]->setColor(Qt::white);
+            }
+            break;
+        case 2:
+            this->setStyleSheet("background-color : white;");
+            mAirspeedNeedletemp->setColor(Qt::black);
+            mAirspeedNeedlepres->setColor(Qt::black);
+            mAirspeedNeedlehum->setColor(Qt::black);
+            for (int i = 0; i < 3; ++i) {
+                tabaiguille[i]->setColor(Qt::black);
+            }
+            break;
+    }
+    this->repaint();
+}
+
+void View::connexion() {
+    connect->show();
+}
+
