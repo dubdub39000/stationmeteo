@@ -12,6 +12,7 @@
 #include "View.h"
 #include "Setting.h"
 #include "Jute.h"
+#include "Logview.h"
 #include <chrono>
 
 class Presenter : public QObject {
@@ -21,6 +22,7 @@ private:
     QTimer *timer;
     View *fenetre;
     Setting *setting;
+    Logview *log;
     float Temp;
     float Pressure;
     float Humidity;
@@ -57,6 +59,12 @@ public:
    ////////////////calcul tendance/////////////////////
    void inittab(); //initialize les tableau dynamique
     float calcultendance(QVector<float> *tab, float *donnee);
+
+    ///////////////gestion de la fentre log///////////:
+    void openlog();
+    void closelog();
+    void MAJLOG(int nbr1, QString *message); //affiche les messages d'erreurs dans la fenêtre
+    void clear(int nbr); //methode clear des messages
 };
 
 #endif //STATIONMETEO_PRESENTER_H

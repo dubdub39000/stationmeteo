@@ -56,8 +56,12 @@ private:
     QVector<QcNeedleItem*> tabaiguille;
     QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
 
+    /////////bouton des setting/////////
     QPushButton *setting;//boutton des setting de la fenêtre principale
+    ///////message d'erreur en cas de perte de co//////////
     QLabel *connect;// message d'erreur de perte de connexion
+    ////////bouton de la fenetre de log///////////
+    QPushButton *log;
 
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
@@ -66,6 +70,7 @@ public:
 
     QPushButton *getSetting() const;
 
+    QPushButton *getLog() const;
 
     void MAJcolor(int nbr);
     void connexion(); //methode permettant de manipuler le message de perte de connexion.

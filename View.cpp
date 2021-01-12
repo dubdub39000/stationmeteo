@@ -15,12 +15,15 @@ QFrame(){
     mAirspeedGaugepressure = new QcGaugeWidget;
     setting = new QPushButton("setting");
     setting->setObjectName("setting");
+    log = new QPushButton("log");
+    log->setObjectName("log");
     connect = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
     connect->setStyleSheet("color : red");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
     fenetre->addWidget(connect,1,1);
     connect->hide();
+
     setLayout(fenetre);
 }
 
@@ -134,9 +137,10 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 /*On ajoute la gauges à la fenêtre*/
     fenetre->addWidget(mAirspeedGaugepressure,0,1);
 
-    /*creation du bouton setting*/
+    /*creation des bouttons*/
 
     fenetre->addWidget(setting,1,3);
+    fenetre->addWidget(log,1,0);
 }
 
 
@@ -263,5 +267,9 @@ void View::connexion() {
 
 const QVector<QcLabelItem *> &View::getFleche() const {
     return fleche;
+}
+
+QPushButton *View::getLog() const {
+    return log;
 }
 

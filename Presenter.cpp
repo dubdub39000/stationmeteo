@@ -24,18 +24,19 @@ void Presenter::init() {
     serial->open(QIODevice::ReadWrite);//ouverture du port
     if (serial->isOpen())
     {
-        qDebug("le port USB est ouvert");
+        MAJLOG(2,new QString("le port USB est ouvert"));
     } else
-        qDebug("Echec de l'ouverture du port");
+        MAJLOG(2,new QString("Echec de l'ouverture du port"));
 }
 
 //Constructeur
 Presenter::Presenter(){
     serial=new QSerialPort();
-    init();
     fenetre = new View;
-    fenetre->show();
     setting = new Setting;
+    log = new Logview;
+    init();//mettre le init après pour permettre un affichage des messages dans la fenetre log
+    fenetre->show();
     timer=new QTimer();
     timer->start(1000);//la première trame Json est incomplète donc on delay
     dureerefresh = 2000;
@@ -44,20 +45,25 @@ Presenter::Presenter(){
     tabpress = new QVector<float>;
     tabhum = new QVector<float>;
     inittab();
-
     /////////////////connnecteur///////////////////
     connect(timer, &QTimer::timeout, this, &Presenter::recupJson);//multitache, permet de pas se faire bloquer en tache de fond
     connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
     connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::closebyvalidersetting);
+    connect(fenetre->getLog(), &QPushButton::clicked, this, &Presenter::openlog);
+    connect(log->getFermer(), &QPushButton::clicked, this, &Presenter::closelog);
+    connect(log->getClearflow(), &QPushButton::clicked, this,[this]{clear(1); });//syntaxe permettant de passer un argument
+    connect(log->getClearlogsys(), &QPushButton::clicked, this, [this]{clear(2);});
 }
+
 Presenter::~Presenter() {
     delete fenetre;
     delete setting;
     delete tabtemp;
     delete tabhum;
     delete tabpress;
+    delete  log;
 }
 
 //Récupération des données JSON
@@ -85,14 +91,14 @@ void Presenter::trameJson(QString *cmd) {
     try { //début code sous exception
         if (cmd->mid(0, 8).toStdString().find('Temp') && cmd->toStdString().size() >= 51
             && cmd->toStdString().size() <= 55) {//ensemble de conditions pour ne prendre que les trames JSON valide
-            qDebug() << *cmd;
+            MAJLOG(1,cmd);
             v = jute::parser::parse(cmd->toStdString());//le parser permet de découper la trame
         }
         else {
-            throw overflow_error("trame invalide\n");
+            throw overflow_error("trame invalide");
         }
     } catch (overflow_error &oe) {
-        qDebug()<<oe.what();
+        MAJLOG(1, new QString("trame invalide"));
     }
     MAJprm(v);
 }
@@ -198,6 +204,7 @@ void Presenter::inittab() {
     tabhum->push_back(1);
 }
 //////////////////////////////gestion de la fenêtre setting///////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 void Presenter::opensettingview() {
     setting->show();
 }
@@ -245,11 +252,46 @@ setting->hide();
 }
 /////////////////////////////////////////reinit des valeurs//////////////////////
 void Presenter::rafraichissementtend() {//on clear les tableaux et on réinit
-    qDebug()<<"Rafraichissement enclenché";
+    MAJLOG(2,new QString("Remise à zéro des tableaux de tendances enclenchée"));
     tabtemp->clear();
     tabhum->clear();
     tabpress->clear();
     inittab();
 }
 
+///////////////////////////gestion de la fentre log//////////////////
+/////////////////////////////////////////////////////////////////////
+
+void Presenter::openlog() {
+log->show();
+}
+
+void Presenter::closelog() {
+    log->hide();
+}
+
+void Presenter::clear(int nbr) {
+    switch (nbr) {
+        case 1:
+            log->getZonetrame()->clear();
+            break;
+        case 2:
+            log->getZonesystem()->clear();
+            break;
+    }
+}
+
+void Presenter::MAJLOG(int nbr1, QString *message) {
+    //////////////envoi dans la zone corespondante//////////
+    switch (nbr1) {
+        case 1:
+            log->getZonetrame()->insertPlainText(*message);
+            log->getZonetrame()->insertPlainText("\n");
+            break;
+        case 2:
+            log->getZonesystem()->insertPlainText(*message);
+            log->getZonesystem()->insertPlainText("\n");
+            break;
+    }
+}
 
