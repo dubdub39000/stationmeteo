@@ -41,7 +41,7 @@ void Setting::inittsetting() {
     valider = new QPushButton("valider");
     valider->setObjectName("valider");
     settingview->addWidget(valider,7,0);
-    erreursaisie = new QLabel("Erreur de saisie");
+    erreursaisie = new QLabel("<span style=\"color:red\">Erreur de saisie </span>");
     test = new QVariant;
     choixcouleur = new QComboBox;
     choixcouleur->addItem("grey", *test);

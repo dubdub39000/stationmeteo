@@ -291,7 +291,7 @@ QcBackgroundItem::QcBackgroundItem(QObject *parent) :
     setPosition(88);
 
     addColor(0.4,Qt::darkGray);
-    addColor(0.8,Qt::black);
+    addColor(0.8,Qt::white);
 
 }
 

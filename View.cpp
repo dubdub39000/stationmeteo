@@ -21,7 +21,7 @@ QFrame(){
     connect->setStyleSheet("color : red");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
-    fenetre->addWidget(connect,1,1);
+    fenetre->addWidget(connect,0,1);
     connect->hide();
 
     setLayout(fenetre);
@@ -45,6 +45,8 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
 /*Placement des gauges et des couleurs*/
     mAirspeedGaugetemp->addArc(55);
+    mAirspeedGaugetemp->addBackground(100);
+    mAirspeedGaugetemp->addArc(90)->setColor(Qt::black);
     mAirspeedGaugetemp->addDegrees(65)->setValueRange(0,50);//longueur intervalle
     QcColorBand *clrBand = mAirspeedGaugetemp->addColorBand(50);//position de la bande de couleur
     clrBand->setValueRange(0,50);//longueur de la bande sur l'arc
@@ -67,7 +69,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
     /*On ajoute la gauges à la fenêtre*/
 
-    fenetre->addWidget(mAirspeedGaugetemp,0,0);//position de la gauge dans la fenetre
+    fenetre->addWidget(mAirspeedGaugetemp,1,0);//position de la gauge dans la fenetre
 
 /********************************************** HUMIDITY ***************************************************/
 
@@ -77,6 +79,8 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 /*Placement des gauges et des couleurs*/
 
     mAirspeedGaugehumidity->addArc(55);
+    mAirspeedGaugehumidity->addBackground(100);
+    mAirspeedGaugehumidity->addArc(90)->setColor(Qt::black);
     mAirspeedGaugehumidity->addDegrees(65)->setValueRange(0,100);//longueur intervalle
     QcColorBand *clrBand1 = mAirspeedGaugehumidity->addColorBand(50);//position de la bande de couleur
     clrBand1->setValueRange(0,100);//longueur de la bande sur l'arc
@@ -102,7 +106,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
     /*On ajoute la gauges à la fenêtre*/
 
-    fenetre->addWidget(mAirspeedGaugehumidity,0,2);
+    fenetre->addWidget(mAirspeedGaugehumidity,1,2);
 
 /*************************************** PRESSURE ***********************************************/
 
@@ -111,6 +115,8 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 /*Placement des gauges et des couleurs*/
 
     mAirspeedGaugepressure->addArc(55);
+    mAirspeedGaugepressure->addBackground(100);
+    mAirspeedGaugepressure->addArc(95)->setColor(Qt::black);
     mAirspeedGaugepressure->addDegrees(65)->setValueRange(0,100);//longueur intervalle
     QcColorBand *clrBand2 = mAirspeedGaugepressure->addColorBand(50);//position de la bande de couleur
     clrBand2->setValueRange(0,100);//longueur de la bande sur l'arc
@@ -135,12 +141,12 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
 
 /*On ajoute la gauges à la fenêtre*/
-    fenetre->addWidget(mAirspeedGaugepressure,0,1);
+    fenetre->addWidget(mAirspeedGaugepressure,1,1);
 
     /*creation des bouttons*/
 
-    fenetre->addWidget(setting,1,3);
-    fenetre->addWidget(log,1,0);
+    fenetre->addWidget(setting,0,3);
+    fenetre->addWidget(log,0,0);
 }
 
 
@@ -189,6 +195,8 @@ void View::inittendance() {
         tabaiguille.push_back(new QcNeedleItem);//tableau contenant les aiguilles
 
         tabgaugetend[i]->addArc(55);
+        tabgaugetend[i]->addBackground(100);
+        tabgaugetend[i]->addArc(90)->setColor(Qt::black);
         tabgaugetend[i]->addDegrees(65)->setValueRange(0, 100);//longueur intervalle
         QcColorBand *clrBandtend = tabgaugetend[i]->addColorBand(50);//position de la bande de couleur
         clrBandtend->setValueRange(0,100);
