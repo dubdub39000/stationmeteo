@@ -7,9 +7,9 @@
 
 #include "FenêtreGauge.h"
 #include <QtWidgets/QFormLayout>
-#include <QtWidgets/QFrame>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QToolBar>
 
 class View : public QFrame
 {
@@ -56,13 +56,13 @@ private:
     QVector<QcNeedleItem*> tabaiguille;
     QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
 
-    /////////bouton des setting/////////
+    /////////bouton des paramètres/////////
     QPushButton *setting;//boutton des setting de la fenêtre principale
+    QPushButton *log;
     ///////message d'erreur en cas de perte de co//////////
     QLabel *connect;// message d'erreur de perte de connexion
-    ////////bouton de la fenetre de log///////////
-    QPushButton *log;
-
+    ////////barre des menus///////////
+    QToolBar *menu;
 public:
     const QVector<QcNeedleItem *> &getTabaiguille() const;
     const QVector<QcGaugeWidget *> &getTabgaugetend() const;

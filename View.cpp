@@ -7,7 +7,7 @@
 
 
 View::View() :
-QFrame(){
+        QFrame(){
 
 /*******************************CREATION DES GAUGES DONT NOUS AURONS BESOIN*********************************/
     mAirspeedGaugetemp = new QcGaugeWidget;
@@ -21,7 +21,10 @@ QFrame(){
     connect->setStyleSheet("color : red");
     initgauge(); //initialisation des gauges supérieur
     inittendance();//initialisation des gauges inférieur
-    fenetre->addWidget(connect,0,1);
+    menu = new QToolBar( "&menu");
+    menu->addWidget(setting);
+    menu->addWidget(log);
+    fenetre->addWidget(menu,0,0);
     connect->hide();
 
     setLayout(fenetre);
@@ -143,10 +146,6 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 /*On ajoute la gauges à la fenêtre*/
     fenetre->addWidget(mAirspeedGaugepressure,1,1);
 
-    /*creation des bouttons*/
-
-    fenetre->addWidget(setting,0,3);
-    fenetre->addWidget(log,0,0);
 }
 
 

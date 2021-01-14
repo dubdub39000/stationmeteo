@@ -295,3 +295,4 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
     }
 }
 
+

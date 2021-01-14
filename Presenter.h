@@ -14,6 +14,7 @@
 #include "Jute.h"
 #include "Logview.h"
 #include <chrono>
+#include <QtWidgets/QMenuBar>
 
 class Presenter : public QObject {
 Q_OBJECT
@@ -49,16 +50,16 @@ public:
 
     void MAJtend(QVector<float> *tabtend,float *donnee, int index);
 
+   ////////////////calcul tendance/////////////////////
+   void inittab(); //initialize les tableau dynamique
+    float calcultendance(QVector<float> *tab, float *donnee);
+
     ///////////////gestion fenêtre setting/////////////////
     void opensettingview();// permet d'afficher la fenetre des setting, elle s'initialise au lancement de l'appli
     void closebyvalidersetting();//on cache la fenêtre en cas de validation
     void closbyannulersetting();//on ferme la fenêtre setting
     void MAJparameter();// permet de prendre les valeurs de setting et les inclure dans view
     void rafraichissementtend();// remet à zero l'ensemble des variables de calcul de tendance
-
-   ////////////////calcul tendance/////////////////////
-   void inittab(); //initialize les tableau dynamique
-    float calcultendance(QVector<float> *tab, float *donnee);
 
     ///////////////gestion de la fentre log///////////:
     void openlog();
