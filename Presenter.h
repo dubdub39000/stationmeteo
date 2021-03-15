@@ -7,7 +7,6 @@
 
 
 #include <QtCore/QObject>
-#include <QtSerialPort/QSerialPort>
 #include <QtCore/QTimer>
 #include "View.h"
 #include "Setting.h"
@@ -16,6 +15,7 @@
 #include <chrono>
 #include <QtWidgets/QMenuBar>
 #include <QtNetwork>
+#include <QApplication>
 class Presenter : public QObject {
 Q_OBJECT
 private:
@@ -36,12 +36,12 @@ private:
 
     bool keepwindows;//  permet de maintenir la fenetre active si erreur de saisie
 public:
-    Presenter();
+    Presenter(QApplication* app);
     virtual ~Presenter();
     void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
-    ////////////////gestion de la trame JSON avec exception//////////////////
 
-    void TestConnection() const; //permet d'envoyer la requête http GET à la database
+    ////////////////gestion de la trame JSON avec exception//////////////////
+    void TestConnection(); //permet d'envoyer la requête http GET à la database
     void recupJson(QNetworkReply *reply);
     void trameJson(QString *cmd); //methode pour éliminer les trame invalide
     ///////////////gestion fenêtre view///////////////////////

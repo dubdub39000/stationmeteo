@@ -13,10 +13,8 @@
 using namespace std;
 using namespace jute;
 
-
-
 //Constructeur
-Presenter::Presenter(){
+Presenter::Presenter(QApplication* app){
     fenetre = new View;
     setting = new Setting;
     log = new Logview;
@@ -28,9 +26,10 @@ Presenter::Presenter(){
     tabtemp = new QVector<float>;
     tabpress = new QVector<float>;
     tabhum = new QVector<float>;
+    manager = new QNetworkAccessManager(app);
     inittab();
     /////////////////connnecteur///////////////////
-    connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//multitache, permet de pas se faire bloquer en tache de fond
+    connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
     connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
     connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
@@ -48,13 +47,16 @@ Presenter::~Presenter() {
     delete tabhum;
     delete tabpress;
     delete  log;
+    delete timer;
+    delete manager;
 }
 
-//Récupération des données JSON
-void Presenter::TestConnection() const {
-    auto status = connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
-    qDebug() << "Connection status:" << status;
+/////////////Récupération des données JSON/////////////////////////
+
+void Presenter::TestConnection() {
     manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
+    connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
+    MAJLOG(2, new QString("requête envoyé"));
 }
 
 void Presenter::recupJson(QNetworkReply *reply) {
@@ -86,24 +88,30 @@ void Presenter::trameJson(QString *cmd) {
     }
     MAJprm(v);
 }
+
+/**********************************************************
+*
+ *                 gestion interface graphique
+ *
+ **********************************************************/
 //Permet de mettre à jour les valeurs sur l'interface graphique
 void Presenter::MAJprm(jute::jValue v) {
 
         if (tabtemp->value(4) < dureetendance) {
             ///////////température//////////////
-            Temp = v["Temp"].as_double();
+            Temp = v["temp"].as_double();
             fenetre->getMAirspeedNeedletemp()->setCurrentValue(Temp);//modifie la valeur de l'aiguille
             fenetre->getLab()->setText(fenetre->getLab()->text().mid(0, fenetre->getLab()->text().toStdString().find('.') + 2));
             fenetre->getMAirspeedGaugetemp()->repaint();
             MAJtend(tabtemp, &Temp, 0);
             /////////////Pressure//////////////
-            Pressure = v["Pressure"].as_double();
+            Pressure = v["pressure"].as_double();
             fenetre->getMAirspeedNeedlepres()->setCurrentValue(Pressure);
             fenetre->getLab2()->setText(fenetre->getLab2()->text().mid(0, fenetre->getLab2()->text().toStdString().find('.') + 3));//permet à l'affichage de ne mettre que deux décimals
             fenetre->getMAirspeedGaugepressure()->repaint();
             MAJtend(tabpress, &Pressure, 1);
             ////////////////Humidity/////////////
-            Humidity = v["Humidity"].as_double();
+            Humidity = v["humidity"].as_double();
             fenetre->getMAirspeedNeedlehum()->setCurrentValue(Humidity);
             fenetre->getLab1()->setText(fenetre->getLab1()->text().mid(0, fenetre->getLab1()->text().toStdString().find('.') + 3));
             fenetre->getMAirspeedGaugehumidity()->repaint();
@@ -184,8 +192,11 @@ void Presenter::inittab() {
     tabpress->push_back(1);
     tabhum->push_back(1);
 }
-//////////////////////////////gestion de la fenêtre setting///////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
+/**********************************************************************************
+ *
+ *                     gestion de la fenêtre setting
+ *
+ * **********************************************************************************/
 void Presenter::opensettingview() {
     setting->show();
 }
@@ -240,8 +251,11 @@ void Presenter::rafraichissementtend() {//on clear les tableaux et on réinit
     inittab();
 }
 
-///////////////////////////gestion de la fentre log//////////////////
-/////////////////////////////////////////////////////////////////////
+/*******************************************************************
+ *
+ *                      gestion de la fentre log
+ *
+*********************************************************************/
 
 void Presenter::openlog() {
 log->show();
@@ -275,5 +289,3 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
             break;
     }
 }
-
-
