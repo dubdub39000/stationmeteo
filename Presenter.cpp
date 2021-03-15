@@ -13,32 +13,16 @@
 using namespace std;
 using namespace jute;
 
-//Test d'ouverture du port
-void Presenter::init() {
-    serial->setPortName("/dev/ttyACM0"); //definition du port
-    serial->setBaudRate(QSerialPort::Baud9600); //definition vitesse de transmission (doit être la meme que sur le arduino)
-    serial->setDataBits(QSerialPort::Data8);//codage sur 8 bits
-    serial->setParity(QSerialPort::NoParity);
-    serial->setStopBits(QSerialPort::OneStop);//un ou deux bits de stop
-    serial->setFlowControl(QSerialPort::NoFlowControl);//pas de controle de flux
-    serial->open(QIODevice::ReadWrite);//ouverture du port
-    if (serial->isOpen())
-    {
-        MAJLOG(2,new QString("le port USB est ouvert"));
-    } else
-        MAJLOG(2,new QString("Echec de l'ouverture du port"));
-}
+
 
 //Constructeur
 Presenter::Presenter(){
-    serial=new QSerialPort();
     fenetre = new View;
     setting = new Setting;
     log = new Logview;
-    init();//mettre le init après pour permettre un affichage des messages dans la fenetre log
     fenetre->show();
     timer=new QTimer();
-    timer->start(1000);//la première trame Json est incomplète donc on delay
+    timer->start(2000);
     dureerefresh = 2000;
     dureetendance = 100;
     tabtemp = new QVector<float>;
@@ -46,7 +30,7 @@ Presenter::Presenter(){
     tabhum = new QVector<float>;
     inittab();
     /////////////////connnecteur///////////////////
-    connect(timer, &QTimer::timeout, this, &Presenter::recupJson);//multitache, permet de pas se faire bloquer en tache de fond
+    connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//multitache, permet de pas se faire bloquer en tache de fond
     connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
     connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
@@ -67,31 +51,31 @@ Presenter::~Presenter() {
 }
 
 //Récupération des données JSON
-void Presenter::recupJson() {
-    QString rxBytes;
-    rxBytes.append(serial->readAll());
+void Presenter::TestConnection() const {
+    auto status = connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
+    qDebug() << "Connection status:" << status;
+    manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
+}
+
+void Presenter::recupJson(QNetworkReply *reply) {
+    QString answer =reply->readAll();
     try {
-        if (rxBytes==""){
+        if (answer==""){
             throw overflow_error("Connect lost");
         }
     } catch (overflow_error &cl) {
         fenetre->connexion();//affiche message d'erreur dans la fenetre
     }
-    int end = rxBytes.lastIndexOf("\r\n");
-    QStringList cmds = QString(rxBytes.mid(0, end)).split("\r\n", QString::SkipEmptyParts);
-    rxBytes = rxBytes.mid(end);//permet de positionner le début la chaine au début de trame suivante
-    for (QString cmd:cmds) { //parcours la QstringList
-        trameJson(&cmd);
-    }
+        trameJson(&answer);
 }
 
 void Presenter::trameJson(QString *cmd) {
     jute::jValue v;
     timer->start(dureerefresh);//durée de rafraichissement
     try { //début code sous exception
-        if (cmd->mid(0, 8).toStdString().find('Temp') && cmd->toStdString().size() >= 51
-            && cmd->toStdString().size() <= 55) {//ensemble de conditions pour ne prendre que les trames JSON valide
-            MAJLOG(1,cmd);
+        if (cmd->mid(0, 8).toStdString().find('temp') )
+             {//ensemble de conditions pour ne prendre que les trames JSON valide
+            MAJLOG(1,cmd);//affiche la trame reçue dans la fenetre de log
             v = jute::parser::parse(cmd->toStdString());//le parser permet de découper la trame
         }
         else {
@@ -111,21 +95,18 @@ void Presenter::MAJprm(jute::jValue v) {
             fenetre->getMAirspeedNeedletemp()->setCurrentValue(Temp);//modifie la valeur de l'aiguille
             fenetre->getLab()->setText(fenetre->getLab()->text().mid(0, fenetre->getLab()->text().toStdString().find('.') + 2));
             fenetre->getMAirspeedGaugetemp()->repaint();
-            //MAJtendtemp();
             MAJtend(tabtemp, &Temp, 0);
             /////////////Pressure//////////////
             Pressure = v["Pressure"].as_double();
             fenetre->getMAirspeedNeedlepres()->setCurrentValue(Pressure);
             fenetre->getLab2()->setText(fenetre->getLab2()->text().mid(0, fenetre->getLab2()->text().toStdString().find('.') + 3));//permet à l'affichage de ne mettre que deux décimals
             fenetre->getMAirspeedGaugepressure()->repaint();
-            //MAJtendpress();
             MAJtend(tabpress, &Pressure, 1);
             ////////////////Humidity/////////////
             Humidity = v["Humidity"].as_double();
             fenetre->getMAirspeedNeedlehum()->setCurrentValue(Humidity);
             fenetre->getLab1()->setText(fenetre->getLab1()->text().mid(0, fenetre->getLab1()->text().toStdString().find('.') + 3));
             fenetre->getMAirspeedGaugehumidity()->repaint();
-            //MAJtendhum();
             MAJtend(tabhum, &Humidity,2);
         } else
         {
