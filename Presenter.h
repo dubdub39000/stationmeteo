@@ -24,6 +24,7 @@ private:
     Setting *setting;
     Logview *log;
     QNetworkAccessManager *manager;
+    bool status;
     float Temp;
     float Pressure;
     float Humidity;

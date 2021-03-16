@@ -9,7 +9,6 @@
 #include <QTimer>
 #include <QString>
 
-
 using namespace std;
 using namespace jute;
 
@@ -20,7 +19,7 @@ Presenter::Presenter(QApplication* app){
     log = new Logview;
     fenetre->show();
     timer=new QTimer();
-    timer->start(2000);
+    timer->start(1000);
     dureerefresh = 2000;
     dureetendance = 100;
     tabtemp = new QVector<float>;
@@ -29,7 +28,7 @@ Presenter::Presenter(QApplication* app){
     manager = new QNetworkAccessManager(app);
     inittab();
     /////////////////connnecteur///////////////////
-    connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
+    status = connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
     connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
     connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
@@ -54,9 +53,9 @@ Presenter::~Presenter() {
 /////////////Récupération des données JSON/////////////////////////
 
 void Presenter::TestConnection() {
+    qDebug() << "Connection status:" << status;
     manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
     connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
-    MAJLOG(2, new QString("requête envoyé"));
 }
 
 void Presenter::recupJson(QNetworkReply *reply) {
@@ -66,8 +65,10 @@ void Presenter::recupJson(QNetworkReply *reply) {
             throw overflow_error("Connect lost");
         }
     } catch (overflow_error &cl) {
+        MAJLOG(2,new QString("Connect lost"));
         fenetre->connexion();//affiche message d'erreur dans la fenetre
     }
+    qDebug() << answer;
         trameJson(&answer);
 }
 
@@ -116,6 +117,7 @@ void Presenter::MAJprm(jute::jValue v) {
             fenetre->getLab1()->setText(fenetre->getLab1()->text().mid(0, fenetre->getLab1()->text().toStdString().find('.') + 3));
             fenetre->getMAirspeedGaugehumidity()->repaint();
             MAJtend(tabhum, &Humidity,2);
+            emit SIGNAL(s);
         } else
         {
             rafraichissementtend();
