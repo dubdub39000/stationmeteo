@@ -19,12 +19,13 @@
 class Presenter : public QObject {
 Q_OBJECT
 private:
-    QTimer *timer;
+    QTimer *timerjson;
+    QTimer *timerinit;
     View *fenetre;
     Setting *setting;
     Logview *log;
     QNetworkAccessManager *manager;
-    bool status;
+    QString *answer;
     float Temp;
     float Pressure;
     float Humidity;

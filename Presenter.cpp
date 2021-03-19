@@ -18,8 +18,6 @@ Presenter::Presenter(QApplication* app){
     setting = new Setting;
     log = new Logview;
     fenetre->show();
-    timer=new QTimer();
-    timer->start(1000);
     dureerefresh = 2000;
     dureetendance = 100;
     tabtemp = new QVector<float>;
@@ -27,8 +25,10 @@ Presenter::Presenter(QApplication* app){
     tabhum = new QVector<float>;
     manager = new QNetworkAccessManager(app);
     inittab();
+    timerjson=new QTimer();
+    timerjson->start(dureerefresh);//durée de rafraichissement
     /////////////////connnecteur///////////////////
-    status = connect(timer, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
+    connect(timerjson, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
     connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
     connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
     connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
@@ -46,35 +46,37 @@ Presenter::~Presenter() {
     delete tabhum;
     delete tabpress;
     delete  log;
-    delete timer;
+    delete timerjson;
+    delete timerinit;
     delete manager;
 }
 
 /////////////Récupération des données JSON/////////////////////////
 
 void Presenter::TestConnection() {
-    qDebug() << "Connection status:" << status;
-    manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
+    manager->get(QNetworkRequest(QUrl("http://192.168.104.172/meteo/lastrow.php")));//base Nolan
+    //manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
     connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
 }
 
 void Presenter::recupJson(QNetworkReply *reply) {
-    QString answer =reply->readAll();
+    *answer =reply->readAll();
+    qDebug() << *answer;
     try {
-        if (answer==""){
+        if (*answer==" "){
             throw overflow_error("Connect lost");
         }
     } catch (overflow_error &cl) {
         MAJLOG(2,new QString("Connect lost"));
         fenetre->connexion();//affiche message d'erreur dans la fenetre
     }
-    qDebug() << answer;
-        trameJson(&answer);
+        trameJson(answer);
+        reply->deleteLater();
+        answer->clear();
 }
 
 void Presenter::trameJson(QString *cmd) {
     jute::jValue v;
-    timer->start(dureerefresh);//durée de rafraichissement
     try { //début code sous exception
         if (cmd->mid(0, 8).toStdString().find('temp') )
              {//ensemble de conditions pour ne prendre que les trames JSON valide
@@ -117,7 +119,6 @@ void Presenter::MAJprm(jute::jValue v) {
             fenetre->getLab1()->setText(fenetre->getLab1()->text().mid(0, fenetre->getLab1()->text().toStdString().find('.') + 3));
             fenetre->getMAirspeedGaugehumidity()->repaint();
             MAJtend(tabhum, &Humidity,2);
-            emit SIGNAL(s);
         } else
         {
             rafraichissementtend();
