@@ -25,7 +25,6 @@ private:
     Setting *setting;
     Logview *log;
     QNetworkAccessManager *manager;
-    QString *answer;
     float Temp;
     float Pressure;
     float Humidity;
@@ -38,10 +37,11 @@ private:
 
     bool keepwindows;//  permet de maintenir la fenetre active si erreur de saisie
 public:
-    Presenter(QApplication* app);
+    Presenter();
     virtual ~Presenter();
     void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
-
+    //////////////////////implémentation signal///////////////////////////
+    void timeinit();
     ////////////////gestion de la trame JSON avec exception//////////////////
     void TestConnection(); //permet d'envoyer la requête http GET à la database
     void recupJson(QNetworkReply *reply);

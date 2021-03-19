@@ -9,35 +9,36 @@
 #include <QTimer>
 #include <QString>
 
+
 using namespace std;
 using namespace jute;
 
 //Constructeur
-Presenter::Presenter(QApplication* app){
-    fenetre = new View;
-    setting = new Setting;
-    log = new Logview;
-    fenetre->show();
+Presenter::Presenter() {
     dureerefresh = 2000;
     dureetendance = 100;
+    fenetre = new View;
+    fenetre->show();
+    connect(fenetre, &View::fenetreloaded, this, &Presenter::timeinit);
+    fenetre->initfenetre();
+    setting = new Setting;
+    log = new Logview;
     tabtemp = new QVector<float>;
     tabpress = new QVector<float>;
     tabhum = new QVector<float>;
-    manager = new QNetworkAccessManager(app);
     inittab();
-    timerjson=new QTimer();
-    timerjson->start(dureerefresh);//durée de rafraichissement
-    /////////////////connnecteur///////////////////
-    connect(timerjson, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
-    connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
-    connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
-    connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
-    connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::closebyvalidersetting);
-    connect(fenetre->getLog(), &QPushButton::clicked, this, &Presenter::openlog);
-    connect(log->getFermer(), &QPushButton::clicked, this, &Presenter::closelog);
-    connect(log->getClearflow(), &QPushButton::clicked, this,[this]{clear(1); });//syntaxe permettant de passer un argument
-    connect(log->getClearlogsys(), &QPushButton::clicked, this, [this]{clear(2);});
-}
+        /////////////////connnecteur///////////////////
+        connect(timerjson, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
+        connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
+        connect(setting->getAnnuler(), &QPushButton::clicked, this, &Presenter::closbyannulersetting);
+        connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::MAJparameter);
+        connect(setting->getValider(), &QPushButton::clicked, this, &Presenter::closebyvalidersetting);
+        connect(fenetre->getLog(), &QPushButton::clicked, this, &Presenter::openlog);
+        connect(log->getFermer(), &QPushButton::clicked, this, &Presenter::closelog);
+        connect(log->getClearflow(), &QPushButton::clicked, this, [this] { clear(1); });//syntaxe permettant de passer un argument
+        connect(log->getClearlogsys(), &QPushButton::clicked, this, [this] { clear(2); });
+
+    }
 
 Presenter::~Presenter() {
     delete fenetre;
@@ -54,32 +55,32 @@ Presenter::~Presenter() {
 /////////////Récupération des données JSON/////////////////////////
 
 void Presenter::TestConnection() {
-    manager->get(QNetworkRequest(QUrl("http://192.168.104.172/meteo/lastrow.php")));//base Nolan
-    //manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
+    manager = new QNetworkAccessManager(this);
+    //manager->get(QNetworkRequest(QUrl("http://192.168.104.172/meteo/lastrow.php")));//base Nolan
+    manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
     connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
 }
 
 void Presenter::recupJson(QNetworkReply *reply) {
-    *answer =reply->readAll();
-    qDebug() << *answer;
+    QString answer =reply->readAll();
+    qDebug() << answer;
     try {
-        if (*answer==" "){
+        if (answer==" "){
             throw overflow_error("Connect lost");
         }
     } catch (overflow_error &cl) {
         MAJLOG(2,new QString("Connect lost"));
         fenetre->connexion();//affiche message d'erreur dans la fenetre
     }
-        trameJson(answer);
+        trameJson(&answer);
         reply->deleteLater();
-        answer->clear();
 }
 
 void Presenter::trameJson(QString *cmd) {
     jute::jValue v;
     try { //début code sous exception
         if (cmd->mid(0, 8).toStdString().find('temp') )
-             {//ensemble de conditions pour ne prendre que les trames JSON valide
+             {//conditions pour ne prendre que les trames JSON valide
             MAJLOG(1,cmd);//affiche la trame reçue dans la fenetre de log
             v = jute::parser::parse(cmd->toStdString());//le parser permet de découper la trame
         }
@@ -291,4 +292,9 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
             log->getZonesystem()->insertPlainText("\n");
             break;
     }
+}
+
+void Presenter::timeinit() {
+    timerjson=new QTimer();
+    timerjson->start(dureerefresh);//durée de rafraichissement
 }
