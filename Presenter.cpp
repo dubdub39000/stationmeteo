@@ -15,10 +15,10 @@ using namespace jute;
 
 //Constructeur
 Presenter::Presenter() {
-    dureerefresh = 2000;
+    dureerefresh = 20000;
     dureetendance = 100;
     fenetre = new View;
-    fenetre->show();
+    fenetre->show(); // on show avant pour ne pas couper l'initialization de la fenetre qui est un process long
     connect(fenetre, &View::fenetreloaded, this, &Presenter::timeinit);
     fenetre->initfenetre();
     setting = new Setting;
@@ -56,14 +56,13 @@ Presenter::~Presenter() {
 
 void Presenter::TestConnection() {
     manager = new QNetworkAccessManager(this);
-    //manager->get(QNetworkRequest(QUrl("http://192.168.104.172/meteo/lastrow.php")));//base Nolan
     manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
     connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
+    MAJLOG(2,new QString("Request successfull"));
 }
 
 void Presenter::recupJson(QNetworkReply *reply) {
     QString answer =reply->readAll();
-    qDebug() << answer;
     try {
         if (answer==" "){
             throw overflow_error("Connect lost");
@@ -100,7 +99,7 @@ void Presenter::trameJson(QString *cmd) {
  **********************************************************/
 //Permet de mettre à jour les valeurs sur l'interface graphique
 void Presenter::MAJprm(jute::jValue v) {
-
+    timerjson->start(dureerefresh);
         if (tabtemp->value(4) < dureetendance) {
             ///////////température//////////////
             Temp = v["temp"].as_double();
