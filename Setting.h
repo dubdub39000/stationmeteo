@@ -49,6 +49,7 @@ public:
     QPushButton *getAnnuler() const;
     QLineEdit *getValeurtendance() const;
     QLineEdit *getValeurrafraichissement() const;
+
     void affichageerreur(int nbr);
     void MAJsetting(); //permet de modifier des paramètres à la volé
     QComboBox *getChoixcouleur() const;

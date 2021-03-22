@@ -29,14 +29,14 @@ void Setting::inittsetting() {
     rangetendance = new QLabel("doit être supérieur à 10");
     settingview->addWidget(rangetendance,3,0);
     valeurtendance = new QLineEdit;
-    valeurtendance->setText("100");
+    valeurtendance->setText("100");// valeur a changer en cas de changement de valeur par défaut
     settingview->addWidget(valeurtendance,2,3);
     dureerafraichissement = new QLabel("durée rafraichisement en s");
     settingview->addWidget(dureerafraichissement,4,0);
     rangerefresh = new QLabel("doit être superieur à  1");
     settingview->addWidget(rangerefresh,5,0);
     valeurrafraichissement = new QLineEdit;
-    valeurrafraichissement->setText("2");
+    valeurrafraichissement->setText("20");// valeur a changer en cas de changement de valeur par défaut
     settingview->addWidget(valeurrafraichissement,4,3);
     valider = new QPushButton("valider");
     valider->setObjectName("valider");
@@ -91,3 +91,4 @@ void Setting::MAJsetting() {
 QComboBox *Setting::getChoixcouleur() const {
     return choixcouleur;
 }
+
