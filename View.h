@@ -20,6 +20,7 @@ public:
     ~View();
     void initgauge();
     void inittendance();
+    void initfenetre();
 
 
     QcGaugeWidget *getMAirspeedGaugetemp() const;
@@ -60,7 +61,7 @@ private:
     QPushButton *setting;//boutton des setting de la fenêtre principale
     QPushButton *log;
     ///////message d'erreur en cas de perte de co//////////
-    QLabel *connect;// message d'erreur de perte de connexion
+    QLabel *connection;// message d'erreur de perte de connexion
     ////////barre des menus///////////
     QToolBar *menu;
 public:
@@ -74,6 +75,10 @@ public:
 
     void MAJcolor(int nbr);
     void connexion(); //methode permettant de manipuler le message de perte de connexion.
+
+    ///////////////gestion du temps d'init///////////////:
+    signals :
+    void fenetreloaded(); //mise en signal pour être utilisé
 };
 
 #endif //STATIONMETEO_VIEW_H

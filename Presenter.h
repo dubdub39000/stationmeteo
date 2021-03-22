@@ -7,7 +7,6 @@
 
 
 #include <QtCore/QObject>
-#include <QtSerialPort/QSerialPort>
 #include <QtCore/QTimer>
 #include "View.h"
 #include "Setting.h"
@@ -15,15 +14,17 @@
 #include "Logview.h"
 #include <chrono>
 #include <QtWidgets/QMenuBar>
-
+#include <QtNetwork>
+#include <QApplication>
 class Presenter : public QObject {
 Q_OBJECT
 private:
-    QSerialPort *serial;
-    QTimer *timer;
+    QTimer *timerjson;
+    QTimer *timerinit;
     View *fenetre;
     Setting *setting;
     Logview *log;
+    QNetworkAccessManager *manager;
     float Temp;
     float Pressure;
     float Humidity;
@@ -38,14 +39,13 @@ private:
 public:
     Presenter();
     virtual ~Presenter();
-
-    void init();
-    void recupJson();
     void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
+    //////////////////////implémentation signal///////////////////////////
+    void timeinit();
     ////////////////gestion de la trame JSON avec exception//////////////////
-
+    void TestConnection(); //permet d'envoyer la requête http GET à la database
+    void recupJson(QNetworkReply *reply);
     void trameJson(QString *cmd); //methode pour éliminer les trame invalide
-
     ///////////////gestion fenêtre view///////////////////////
 
     void MAJtend(QVector<float> *tabtend,float *donnee, int index);

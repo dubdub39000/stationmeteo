@@ -6,33 +6,40 @@
 #include <QDebug>
 
 
+
+
 View::View() :
-        QFrame(){
-
-/*******************************CREATION DES GAUGES DONT NOUS AURONS BESOIN*********************************/
-    mAirspeedGaugetemp = new QcGaugeWidget;
-    mAirspeedGaugehumidity = new QcGaugeWidget;
-    mAirspeedGaugepressure = new QcGaugeWidget;
-    setting = new QPushButton("setting");
-    setting->setObjectName("setting");
-    log = new QPushButton("log");
-    log->setObjectName("log");
-    connect = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
-    connect->setStyleSheet("color : red");
-    initgauge(); //initialisation des gauges supérieur
-    inittendance();//initialisation des gauges inférieur
-    menu = new QToolBar( "&menu");
-    menu->addWidget(setting);
-    menu->addWidget(log);
-    fenetre->addWidget(menu,0,0);
-    connect->hide();
-
-    setLayout(fenetre);
+        QFrame() {
 }
 
 View::~View()
 {
     delete fenetre;
+}
+
+void View::initfenetre() {
+
+/*******************************CREATION DES GAUGES DONT NOUS AURONS BESOIN*********************************/
+        mAirspeedGaugetemp = new QcGaugeWidget;
+        mAirspeedGaugehumidity = new QcGaugeWidget;
+        mAirspeedGaugepressure = new QcGaugeWidget;
+        initgauge(); //initialisation des gauges supérieur
+        inittendance();//initialisation des gauges inférieur
+        setting = new QPushButton("setting");
+        setting->setObjectName("setting");
+        log = new QPushButton("log");
+        log->setObjectName("log");
+        connection = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
+        connection->setStyleSheet("color : red");
+        menu = new QToolBar("&menu");
+        menu->addWidget(setting);
+        menu->addWidget(log);
+        fenetre->addWidget(menu, 0, 0);
+        connection->hide();
+    //if (gaugefinish || tendancefinish) {
+        setLayout(fenetre);
+    //}
+        emit fenetreloaded();
 }
 
 /********* fonction de placement des éléments présents sur l'interface graphique ******/
@@ -145,7 +152,6 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
 /*On ajoute la gauges à la fenêtre*/
     fenetre->addWidget(mAirspeedGaugepressure,1,1);
-
 }
 
 
@@ -269,7 +275,7 @@ void View::MAJcolor(int nbr) {
 }
 
 void View::connexion() {
-    connect->show();
+    connection->show();
 }
 
 const QVector<QcLabelItem *> &View::getFleche() const {
