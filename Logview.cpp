@@ -5,7 +5,7 @@
 #include "Logview.h"
 
 Logview::Logview() {
-    logviewer = new QGridLayout;
+    logviewer = new QGridLayout();
    initlog();
     setLayout(logviewer);
 }

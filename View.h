@@ -58,10 +58,10 @@ private:
     QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
 
     /////////bouton des paramètres/////////
-    QPushButton *setting;//boutton des setting de la fenêtre principale
+    QPushButton *setting; //boutton des setting de la fenêtre principale
     QPushButton *log;
     ///////message d'erreur en cas de perte de co//////////
-    QLabel *connection;// message d'erreur de perte de connexion
+    QLabel *connection; // message d'erreur de perte de connexion
     ////////barre des menus///////////
     QToolBar *menu;
 public:

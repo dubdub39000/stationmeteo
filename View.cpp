@@ -36,9 +36,8 @@ void View::initfenetre() {
         menu->addWidget(log);
         fenetre->addWidget(menu, 0, 0);
         connection->hide();
-    //if (gaugefinish || tendancefinish) {
         setLayout(fenetre);
-    //}
+
         emit fenetreloaded();
 }
 

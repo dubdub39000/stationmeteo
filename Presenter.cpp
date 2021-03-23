@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QTimer>
 #include <QString>
-#include <error.h>
 
 
 using namespace std;
@@ -48,9 +47,12 @@ Presenter::~Presenter() {
     delete tabhum;
     delete tabpress;
     delete  log;
-    delete timerjson;
-    delete timerinit;
-    delete manager;
+}
+
+
+void Presenter::timeinit() {
+    timerjson=new QTimer();
+    timerjson->start(2000);//durée de rafraichissement
 }
 
 /////////////Récupération des données JSON/////////////////////////
@@ -299,10 +301,6 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
     }
 }
 
-void Presenter::timeinit() {
-    timerjson=new QTimer();
-    timerjson->start(2000);//durée de rafraichissement
-}
 
 
 
