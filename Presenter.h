@@ -21,7 +21,6 @@ class Presenter : public QObject {
 Q_OBJECT
 private:
     QTimer *timerjson;
-    QTimer *timerinit;
     View *fenetre;
     Setting *setting;
     Logview *log;
