@@ -74,7 +74,7 @@ public:
     QPushButton *getLog() const;
 
     void MAJcolor(int nbr);
-    void connexion(); //methode permettant de manipuler le message de perte de connexion.
+    void connexion(int a); //methode permettant de manipuler le message de perte de connexion.
 
     ///////////////gestion du temps d'init///////////////:
     signals :

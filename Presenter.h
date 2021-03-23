@@ -16,6 +16,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtNetwork>
 #include <QApplication>
+
 class Presenter : public QObject {
 Q_OBJECT
 private:
@@ -25,6 +26,7 @@ private:
     Setting *setting;
     Logview *log;
     QNetworkAccessManager *manager;
+    QNetworkReply *reply;
     float Temp;
     float Pressure;
     float Humidity;
@@ -43,9 +45,10 @@ public:
     //////////////////////implémentation signal///////////////////////////
     void timeinit();
     ////////////////gestion de la trame JSON avec exception//////////////////
-    void TestConnection(); //permet d'envoyer la requête http GET à la database
-    void recupJson(QNetworkReply *reply);
-    void trameJson(QString *cmd); //methode pour éliminer les trame invalide
+    void TestConnection(); // envoi la requête http à la database
+    void errorconnection(QNetworkReply *networkReply); //methode pour verif erreur de connection avec la database
+    void recupJson(QNetworkReply *qNetworkReply);//transmet la réponse de la requete sous frome de String à trameJson
+    void trameJson(QString *cmd); //parsing de la trame sous condition pour éliminer si trame invalide et envoi à majprm
     ///////////////gestion fenêtre view///////////////////////
 
     void MAJtend(QVector<float> *tabtend,float *donnee, int index);

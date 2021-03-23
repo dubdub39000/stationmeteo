@@ -29,7 +29,7 @@ void View::initfenetre() {
         setting->setObjectName("setting");
         log = new QPushButton("log");
         log->setObjectName("log");
-        connection = new QLabel("Connect Lost, check cable between computer and Arduino and restart the app");
+        connection = new QLabel("Database unreachable.\n Please, check the connection of database or your computer with the Network");
         connection->setStyleSheet("color : red");
         menu = new QToolBar("&menu");
         menu->addWidget(setting);
@@ -274,8 +274,12 @@ void View::MAJcolor(int nbr) {
     this->repaint();
 }
 
-void View::connexion() {
-    connection->show();
+void View::connexion(int a) {
+    if (a == 1){
+        connection->show();
+    } else {
+        connection->hide();
+    }
 }
 
 const QVector<QcLabelItem *> &View::getFleche() const {

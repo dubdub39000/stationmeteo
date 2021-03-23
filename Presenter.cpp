@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QString>
+#include <error.h>
 
 
 using namespace std;
@@ -56,23 +57,28 @@ Presenter::~Presenter() {
 
 void Presenter::TestConnection() {
     manager = new QNetworkAccessManager(this);
-    manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
-    connect(manager, &QNetworkAccessManager::finished, this, &Presenter::recupJson);
-    MAJLOG(2,new QString("Request successfull"));
-}
+       reply = manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
+        connect(manager, &QNetworkAccessManager::finished, this, &Presenter::errorconnection);
+    }
 
-void Presenter::recupJson(QNetworkReply *reply) {
-    QString answer =reply->readAll();
+void Presenter::errorconnection(QNetworkReply *networkReply) {
     try {
-        if (answer==" "){
+        if (networkReply->error() != QNetworkReply::NoError) {
             throw overflow_error("Connect lost");
         }
+        fenetre->connexion(2); //hide la fenetre d'erreur
+        recupJson(networkReply);
+        MAJLOG(2, new QString("request successfull"));
     } catch (overflow_error &cl) {
-        MAJLOG(2,new QString("Connect lost"));
-        fenetre->connexion();//affiche message d'erreur dans la fenetre
+        MAJLOG(2, new QString("cannot connect with database"));
+        fenetre->connexion(1);//show la fenetre d'erreur
     }
+}
+
+void Presenter::recupJson(QNetworkReply *qNetworkReply) {
+    QString answer =qNetworkReply->readAll();
         trameJson(&answer);
-        reply->deleteLater();
+        qNetworkReply->deleteLater();
 }
 
 void Presenter::trameJson(QString *cmd) {
@@ -295,5 +301,9 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
 
 void Presenter::timeinit() {
     timerjson=new QTimer();
-    timerjson->start(dureerefresh);//durée de rafraichissement
+    timerjson->start(2000);//durée de rafraichissement
 }
+
+
+
+
