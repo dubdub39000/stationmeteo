@@ -585,7 +585,7 @@ QcNeedleItem::QcNeedleItem(QObject *parent) :
     mCurrentValue = 0;
     mColor = Qt::black;
     mLabel = NULL;
-    mNeedleType = FeatherNeedle;
+    mNeedleType = DiamonNeedle;
 }
 
 void QcNeedleItem::draw(QPainter *painter)

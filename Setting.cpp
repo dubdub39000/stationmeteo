@@ -46,6 +46,7 @@ void Setting::inittsetting() {
     choixcouleur = new QComboBox;
     choixcouleur->addItem("grey", *test);
     choixcouleur->addItem("white",*test);
+    choixcouleur->addItem("black",*test);
     couleur = new QLabel("couleur du fond");
     settingview->addWidget(couleur,6,2);
     settingview->addWidget(choixcouleur,6,3);

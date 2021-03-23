@@ -210,7 +210,7 @@ void Presenter::MAJparameter() {
     temp1 = setting->getValeurtendance()->text().toInt();
     temp2 = setting->getValeurrafraichissement()->text().toInt() * 1000;//pour mettre en seconde
     /////////////////////paramètre tendance/////////////////
-
+    timerjson->start(dureerefresh);//durée de rafraichissement
     if (temp1 < 10) {
         setting->affichageerreur(1);
         qDebug() << temp1;
@@ -230,7 +230,11 @@ void Presenter::MAJparameter() {
     ///////////////////paramètre coulor////////////////////
     if (setting->getChoixcouleur()->currentText() == "grey"){
         fenetre->MAJcolor(1);
-    } else{
+    } else if (setting->getChoixcouleur()->currentText() == "black") {
+        fenetre->MAJcolor(3);
+    }
+
+    else{
         fenetre->MAJcolor(2);
     }
 }
@@ -295,5 +299,5 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
 
 void Presenter::timeinit() {
     timerjson=new QTimer();
-    timerjson->start(dureerefresh);//durée de rafraichissement
+    timerjson->start(2000);//durée de rafraichissement
 }

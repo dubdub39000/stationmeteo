@@ -114,6 +114,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     mAirspeedGaugehumidity->addBackground(7);
 
 
+
     /*On ajoute la gauges à la fenêtre*/
 
     fenetre->addWidget(mAirspeedGaugehumidity,1,2);
@@ -270,6 +271,17 @@ void View::MAJcolor(int nbr) {
                 tabaiguille[i]->setColor(Qt::black);
             }
             break;
+
+        case 3:
+            this->setStyleSheet("background-color : black;");
+            mAirspeedNeedletemp->setColor(Qt::white);
+            mAirspeedNeedlepres->setColor(Qt::white);
+            mAirspeedNeedlehum->setColor(Qt::white);
+            for (int i = 0; i < 3; ++i) {
+                tabaiguille[i]->setColor(Qt::white);
+            }
+            break;
+
     }
     this->repaint();
 }
