@@ -58,10 +58,10 @@ private:
     QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
 
     /////////bouton des paramètres/////////
-    QPushButton *setting;//boutton des setting de la fenêtre principale
+    QPushButton *setting; //boutton des setting de la fenêtre principale
     QPushButton *log;
     ///////message d'erreur en cas de perte de co//////////
-    QLabel *connection;// message d'erreur de perte de connexion
+    QLabel *connection; // message d'erreur de perte de connexion
     ////////barre des menus///////////
     QToolBar *menu;
 public:
@@ -74,7 +74,7 @@ public:
     QPushButton *getLog() const;
 
     void MAJcolor(int nbr);
-    void connexion(); //methode permettant de manipuler le message de perte de connexion.
+    void connexion(int a); //methode permettant de manipuler le message de perte de connexion.
 
     ///////////////gestion du temps d'init///////////////:
     signals :
