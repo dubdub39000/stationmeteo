@@ -8,25 +8,37 @@
 #include <QDebug>
 #include <QTimer>
 #include <QString>
-
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
 
 using namespace std;
 using namespace jute;
 
 //Constructeur
 Presenter::Presenter() {
+    fenetre = new View();
     dureerefresh = 20000;
     dureetendance = 100;
-    fenetre = new View;
-    fenetre->show(); // on show avant pour ne pas couper l'initialization de la fenetre qui est un process long
-    connect(fenetre, &View::fenetreloaded, this, &Presenter::timeinit);
-    fenetre->initfenetre();
-    setting = new Setting;
-    log = new Logview;
+    QFuture<void> tread2 = QtConcurrent::run(fenetre, &View::initfenetre);
+    tread2.waitForFinished();
+    setting = new Setting();
+    log = new Logview();
+    ////////ajout des éléments dans la fenetre////////
+    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugetemp(),1,0);
+    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugepressure(),1,1);
+    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugehumidity(),1,2);
+    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[0],2,0);
+    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[1],2,1);
+    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[2],2,2);
+    fenetre->getFenetre()->addWidget(fenetre->getMenu(), 0, 0);
+///////////////////////////////////////////////////////
+    fenetre->show();
     tabtemp = new QVector<float>;
     tabpress = new QVector<float>;
     tabhum = new QVector<float>;
     inittab();
+    timerjson=new QTimer();
+    timerjson->start(2000);//durée de rafraichissement
         /////////////////connnecteur///////////////////
         connect(timerjson, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
         connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
@@ -37,8 +49,8 @@ Presenter::Presenter() {
         connect(log->getFermer(), &QPushButton::clicked, this, &Presenter::closelog);
         connect(log->getClearflow(), &QPushButton::clicked, this, [this] { clear(1); });//syntaxe permettant de passer un argument
         connect(log->getClearlogsys(), &QPushButton::clicked, this, [this] { clear(2); });
+}
 
-    }
 
 Presenter::~Presenter() {
     delete fenetre;
@@ -49,11 +61,6 @@ Presenter::~Presenter() {
     delete  log;
 }
 
-
-void Presenter::timeinit() {
-    timerjson=new QTimer();
-    timerjson->start(2000);//durée de rafraichissement
-}
 
 /////////////Récupération des données JSON/////////////////////////
 
@@ -66,13 +73,13 @@ void Presenter::TestConnection() {
 void Presenter::errorconnection(QNetworkReply *networkReply) {
     try {
         if (networkReply->error() != QNetworkReply::NoError) {
-            throw overflow_error("Connect lost");
+            throw overflow_error("cannot connect with database");
         }
         fenetre->connexion(2); //hide la fenetre d'erreur
         recupJson(networkReply);
         MAJLOG(2, new QString("request successfull"));
     } catch (overflow_error &cl) {
-        MAJLOG(2, new QString("cannot connect with database"));
+        MAJLOG(2, (QString*) cl.what());
         fenetre->connexion(1);//show la fenetre d'erreur
     }
 }

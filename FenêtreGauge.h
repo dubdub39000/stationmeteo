@@ -45,7 +45,7 @@ public:
     QcValuesItem* addValues(float position);
     QcArcItem* addArc(float position);
     QcColorBand* addColorBand(float position);
-    QcNeedleItem* addNeedle(float position);
+    QcNeedleItem *addNeedle(float position);
     QcLabelItem* addLabel(float position);
     QcGlassItem* addGlass(float position);
     QcAttitudeMeter* addAttitudeMeter(float position);

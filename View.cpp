@@ -10,6 +10,24 @@
 
 View::View() :
         QFrame() {
+    fenetre = new QGridLayout();
+    mAirspeedGaugetemp = new QcGaugeWidget();
+    mAirspeedGaugehumidity = new QcGaugeWidget();
+    mAirspeedGaugepressure = new QcGaugeWidget();
+    setting = new QPushButton("setting");
+    log = new QPushButton("log");
+    connection = new QLabel("Database unreachable.\n Please, check the connection of database or your computer with the Network");
+    menu = new QToolBar("&menu");
+    couleurpres=new QList<QPair<QColor, float>>;
+    couleurhum=new QList<QPair<QColor, float>>;
+    couleurtemp=new QList<QPair<QColor, float>>;
+    couleur = new QList<QPair<QColor, float>>;//tableau des couleurs composant les bandes
+
+    for (int i = 0; i < 3; i++) {
+        tabgaugetend.push_back(new QcGaugeWidget);
+        tabaiguille.push_back(new QcNeedleItem);
+    }
+    setLayout(fenetre);
 }
 
 View::~View()
@@ -20,37 +38,24 @@ View::~View()
 void View::initfenetre() {
 
 /*******************************CREATION DES GAUGES DONT NOUS AURONS BESOIN*********************************/
-        mAirspeedGaugetemp = new QcGaugeWidget;
-        mAirspeedGaugehumidity = new QcGaugeWidget;
-        mAirspeedGaugepressure = new QcGaugeWidget;
         initgauge(); //initialisation des gauges supérieur
         inittendance();//initialisation des gauges inférieur
-        setting = new QPushButton("setting");
         setting->setObjectName("setting");
-        log = new QPushButton("log");
         log->setObjectName("log");
-        connection = new QLabel("Database unreachable.\n Please, check the connection of database or your computer with the Network");
         connection->setStyleSheet("color : red");
-        menu = new QToolBar("&menu");
         menu->addWidget(setting);
         menu->addWidget(log);
-        fenetre->addWidget(menu, 0, 0);
         connection->hide();
-        setLayout(fenetre);
 
-        emit fenetreloaded();
 }
 
 /********* fonction de placement des éléments présents sur l'interface graphique ******/
 void View::initgauge() {
 
 /*Création de la fenêtre et mise en place du thème gris */
-    fenetre = new QGridLayout();
     this->setStyleSheet("background-color : darkgrey");
 
     /************************************ TEMPERATURE ******************************************/
-
-QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
 
 /*Placement des gauges et des couleurs*/
     mAirspeedGaugetemp->addArc(55);
@@ -76,14 +81,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     mAirspeedNeedletemp->setValueRange(-10,40);
     mAirspeedGaugetemp->addBackground(7);
 
-    /*On ajoute la gauges à la fenêtre*/
-
-    fenetre->addWidget(mAirspeedGaugetemp,1,0);//position de la gauge dans la fenetre
-
 /********************************************** HUMIDITY ***************************************************/
-
-
-    QList<QPair<QColor, float>> *couleurhum=new QList<QPair<QColor, float>>;
 
 /*Placement des gauges et des couleurs*/
 
@@ -113,13 +111,7 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     mAirspeedGaugehumidity->addBackground(7);
 
 
-    /*On ajoute la gauges à la fenêtre*/
-
-    fenetre->addWidget(mAirspeedGaugehumidity,1,2);
-
 /*************************************** PRESSURE ***********************************************/
-
-    QList<QPair<QColor, float>> *couleurpres=new QList<QPair<QColor, float>>;
 
 /*Placement des gauges et des couleurs*/
 
@@ -148,9 +140,6 @@ QList<QPair<QColor, float>> *couleurtemp=new QList<QPair<QColor, float>>;
     mAirspeedNeedlepres->setValueRange(960,1060);
     mAirspeedGaugepressure->addBackground(7);
 
-
-/*On ajoute la gauges à la fenêtre*/
-    fenetre->addWidget(mAirspeedGaugepressure,1,1);
 }
 
 
@@ -192,13 +181,13 @@ QcLabelItem *View::getLab2() const {
 }
 
 void View::inittendance() {
-    for (int i = 0; i < 3; i++) {//la boucle permet la créetion des trois gauges
-        tabgaugetend.push_back(new QcGaugeWidget);//gauge tendance temperature
-        //tabcolor.push_back(new QcColorBand);//tableau des bandes de couleur
-        auto *couleur = new QList<QPair<QColor, float>>;//tableau des couleurs composant les bandes
-        tabaiguille.push_back(new QcNeedleItem);//tableau contenant les aiguilles
+    couleur->push_back(QPair<QColor, float>(Qt::red, 50));
+    couleur->push_back(QPair<QColor, float>(Qt::green, 100));
+
+    for (int i = 0; i < 3; i++) {//la boucle permet la création des trois gauges
 
         tabgaugetend[i]->addArc(55);
+        qDebug() << i;
         tabgaugetend[i]->addBackground(100);
         tabgaugetend[i]->addArc(90)->setColor(Qt::black);
         tabgaugetend[i]->addDegrees(65)->setValueRange(0, 100);//longueur intervalle
@@ -207,10 +196,8 @@ void View::inittendance() {
 
         //////////////////////////////////////////////////////////////////
 
-        couleur->push_back(QPair<QColor, float>(Qt::red, 50));
-        couleur->push_back(QPair<QColor, float>(Qt::green, 100));
         clrBandtend->setColors(*couleur);
-
+        tabaiguille.push_back(&needletend);//tableau contenant les aiguilles
         tabaiguille[i] = tabgaugetend[i]->addNeedle(60);//taille de l'aiguille
         tabaiguille[i]->setColor(Qt::white);
         tabaiguille[i]->setValueRange(-100, 100);//range permettant d'avoir des valeurs de tendances négatives
@@ -218,21 +205,21 @@ void View::inittendance() {
         tabgaugetend[i]->addBackground(7);
 
         /////////////////////////////////////////////////////////////////
-
         if (i == 0)
         {
             tabgaugetend[i]->addLabel(70)->setText("Tendance C°");
-        }
-        if (i == 1) {
+
+        } else if (i == 1)
+        {
             tabgaugetend[i]->addLabel(70)->setText("Tendance Hpa");
+
         }
-        if (i == 2) {
+        else if (i == 2){
             tabgaugetend[i]->addLabel(70)->setText("Tendance %");
         }
-        fenetre->addWidget(tabgaugetend[i], 2, 0+i);
-
         fleche.push_back(tabgaugetend[i]->addLabel(40));
         fleche[i]->setText((QString) 61);
+
     }
 }
 
@@ -287,5 +274,13 @@ const QVector<QcLabelItem *> &View::getFleche() const {
 
 QPushButton *View::getLog() const {
     return log;
+}
+
+QGridLayout *View::getFenetre() const {
+    return fenetre;
+}
+
+QToolBar *View::getMenu() const {
+    return menu;
 }
 

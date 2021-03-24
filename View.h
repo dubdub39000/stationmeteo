@@ -18,8 +18,6 @@ class View : public QFrame
 public:
     explicit View();
     ~View();
-    void initgauge();
-    void inittendance();
     void initfenetre();
 
 
@@ -39,6 +37,9 @@ private:
 
     QGridLayout *fenetre;//gestionnaire de la fenêtre de controle
     /////////les gauges/////////
+    QList<QPair<QColor, float>> *couleurpres;
+    QList<QPair<QColor, float>> *couleurhum;
+    QList<QPair<QColor, float>> *couleurtemp;
     //il faut les mettre en attribut car ils ont des parents
     QcGaugeWidget *mAirspeedGaugetemp;
     QcGaugeWidget *mAirspeedGaugehumidity;
@@ -55,7 +56,9 @@ private:
 
     QVector<QcGaugeWidget*> tabgaugetend;//tableau contenant le gauges
     QVector<QcNeedleItem*> tabaiguille;
-    QVector<QcLabelItem *> fleche; //tableau des indicateurs de tendance
+    QcNeedleItem needletend;
+    QVector<QcLabelItem*> fleche; //tableau des indicateurs de tendance
+    QList<QPair<QColor, float>> *couleur;//tableau des couleurs composant les bandes
 
     /////////bouton des paramètres/////////
     QPushButton *setting; //boutton des setting de la fenêtre principale
@@ -70,15 +73,18 @@ public:
     const QVector<QcLabelItem *> &getFleche() const;
 
     QPushButton *getSetting() const;
-
+    QGridLayout *getFenetre() const;
     QPushButton *getLog() const;
+    QToolBar *getMenu() const;
 
     void MAJcolor(int nbr);
     void connexion(int a); //methode permettant de manipuler le message de perte de connexion.
 
-    ///////////////gestion du temps d'init///////////////:
+public slots:
+    void initgauge();
+    void inittendance();
     signals :
-    void fenetreloaded(); //mise en signal pour être utilisé
+    void resultThread();
 };
 
 #endif //STATIONMETEO_VIEW_H
