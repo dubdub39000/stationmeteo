@@ -56,7 +56,7 @@ QcColorBand *QcGaugeWidget::addColorBand(float position)
     return item;
 }
 
-QcNeedleItem *QcGaugeWidget::addNeedle(float position)
+QcNeedleItem* QcGaugeWidget::addNeedle(float position)
 {
     QcNeedleItem * item = new QcNeedleItem(this);
     item->setPosition(position);

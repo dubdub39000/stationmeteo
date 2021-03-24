@@ -17,11 +17,11 @@
 #include <QtNetwork>
 #include <QApplication>
 
+
 class Presenter : public QObject {
 Q_OBJECT
 private:
     QTimer *timerjson;
-    QTimer *timerinit;
     View *fenetre;
     Setting *setting;
     Logview *log;
@@ -42,8 +42,6 @@ public:
     Presenter();
     virtual ~Presenter();
     void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
-    //////////////////////implémentation signal///////////////////////////
-    void timeinit();
     ////////////////gestion de la trame JSON avec exception//////////////////
     void TestConnection(); // envoi la requête http à la database
     void errorconnection(QNetworkReply *networkReply); //methode pour verif erreur de connection avec la database
