@@ -22,7 +22,6 @@ Setting::Setting() {
     choixcouleur = new QComboBox;
     couleur = new QLabel("couleur du fond");
     annuler = new QPushButton("annuler");
-    inittsetting();
     setLayout(settingview);
 }
 
@@ -34,24 +33,24 @@ Setting::~Setting() {
 
 void Setting::inittsetting() {
 
+    valeurtendance->setText("100");// valeur a changer en cas de changement de valeur par défaut
+    valeurrafraichissement->setText("20");// valeur a changer en cas de changement de valeur par défaut
+    valider->setObjectName("valider");
+    choixcouleur->addItem("grey", *test);
+    choixcouleur->addItem("white",*test);
+    annuler->setObjectName("annuler");
     settingview->addWidget(titre,0,1);
     settingview->addWidget(parametre,1,0);
     settingview->addWidget(valeur,1,3);
     settingview->addWidget(dureetendance,2,0);
     settingview->addWidget(rangetendance,3,0);
-    valeurtendance->setText("100");// valeur a changer en cas de changement de valeur par défaut
     settingview->addWidget(valeurtendance,2,3);
-    settingview->addWidget(dureerafraichissement,4,0);
+    settingview->addWidget(dureetendance,4,0);
     settingview->addWidget(rangerefresh,5,0);
-    valeurrafraichissement->setText("20");// valeur a changer en cas de changement de valeur par défaut
-    settingview->addWidget(valeurrafraichissement,4,3);
-    valider->setObjectName("valider");
     settingview->addWidget(valider,7,0);
-    choixcouleur->addItem("grey", *test);
-    choixcouleur->addItem("white",*test);
     settingview->addWidget(couleur,6,2);
     settingview->addWidget(choixcouleur,6,3);
-    annuler->setObjectName("annuler");
+    settingview->addWidget(valeurrafraichissement,4,3);
     settingview->addWidget(annuler,7,2);
 }
 
@@ -91,4 +90,3 @@ void Setting::MAJsetting() {
 QComboBox *Setting::getChoixcouleur() const {
     return choixcouleur;
 }
-

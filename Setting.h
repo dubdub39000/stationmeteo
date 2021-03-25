@@ -37,6 +37,8 @@ private:
     QComboBox *choixcouleur;
     QVariant *test;
 
+
+private:
     QPushButton *valider;// bouton valider de la fenetre setting
     QPushButton *annuler;
 
@@ -53,6 +55,7 @@ public:
     void affichageerreur(int nbr);
     void MAJsetting(); //permet de modifier des paramètres à la volé
     QComboBox *getChoixcouleur() const;
+
 };
 
 #endif //STATIONMETEO_SETTING_H

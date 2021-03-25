@@ -2,6 +2,7 @@
 // Created by j.mailly on 11/01/2021.
 //
 
+#include <iostream>
 #include "Logview.h"
 
 Logview::Logview() {
@@ -13,7 +14,6 @@ Logview::Logview() {
     clearlogsys = new QPushButton("clear");
     flow = new QLabel("Trames JSON reçues");
     erreur = new QLabel("erreur system");
-   initlog();
     setLayout(logviewer);
 }
 
@@ -56,4 +56,3 @@ QPushButton *Logview::getClearflow() const {
 QPushButton *Logview::getClearlogsys() const {
     return clearlogsys;
 }
-

@@ -17,28 +17,27 @@ using namespace jute;
 //Constructeur
 Presenter::Presenter() {
     fenetre = new View();
-    dureerefresh = 20000;
-    dureetendance = 100;
-    QFuture<void> tread2 = QtConcurrent::run(fenetre, &View::initfenetre);
-    tread2.waitForFinished();
     setting = new Setting();
     log = new Logview();
-    ////////ajout des éléments dans la fenetre////////
-    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugetemp(),1,0);
-    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugepressure(),1,1);
-    fenetre->getFenetre()->addWidget(fenetre->getMAirspeedGaugehumidity(),1,2);
-    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[0],2,0);
-    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[1],2,1);
-    fenetre->getFenetre()->addWidget(fenetre->getTabgaugetend()[2],2,2);
-    fenetre->getFenetre()->addWidget(fenetre->getMenu(), 0, 0);
-///////////////////////////////////////////////////////
+    dureerefresh = 20000;
+    dureetendance = 100;
+    /////////////////la fenetre principale////////
+    QFuture<void> thread1 = QtConcurrent::run(fenetre, &View::initfenetre);
+    thread1.waitForFinished();
+///////////////////////la fenetre log////////////////////////////////
+    QFuture<void> thread2 = QtConcurrent::run(log , &Logview::initlog);
+    thread2.waitForFinished();
+////////////////////la fenetre setting/////////////////////////////
+    QFuture<void> thread3 = QtConcurrent::run(setting, &Setting::inittsetting);
+    thread3.waitForFinished();
+////////////////////
+timerinit(); //initialize le timerjson;
+///////////////////
     fenetre->show();
     tabtemp = new QVector<float>;
     tabpress = new QVector<float>;
     tabhum = new QVector<float>;
     inittab();
-    timerjson=new QTimer();
-    timerjson->start(2000);//durée de rafraichissement
         /////////////////connnecteur///////////////////
         connect(timerjson, &QTimer::timeout, this, &Presenter::TestConnection);//a chaque timeout du timer (2s) il relance une requête
         connect(fenetre->getSetting(), &QPushButton::clicked, this, &Presenter::opensettingview);
@@ -50,7 +49,6 @@ Presenter::Presenter() {
         connect(log->getClearflow(), &QPushButton::clicked, this, [this] { clear(1); });//syntaxe permettant de passer un argument
         connect(log->getClearlogsys(), &QPushButton::clicked, this, [this] { clear(2); });
 }
-
 
 Presenter::~Presenter() {
     delete fenetre;
@@ -79,7 +77,7 @@ void Presenter::errorconnection(QNetworkReply *networkReply) {
         recupJson(networkReply);
         MAJLOG(2, new QString("request successfull"));
     } catch (overflow_error &cl) {
-        MAJLOG(2, (QString*) cl.what());
+        MAJLOG(2, new QString(cl.what()));
         fenetre->connexion(1);//show la fenetre d'erreur
     }
 }
@@ -170,7 +168,6 @@ void Presenter::MAJtend(QVector<float> *tabtend,float *donnee, int index) {
 
 ///////////////////////////calcul des tendances//////////////////////
 float Presenter::calcultendance(QVector <float> *tab, float *donnee) {
-    //qDebug()<<"test";
     float A; //somme des index
     float B; // somme des data reçues
     float C; // somme du produit de la data et de l'index
@@ -228,7 +225,6 @@ void Presenter::MAJparameter() {
 
     if (temp1 < 10) {
         setting->affichageerreur(1);
-        qDebug() << temp1;
         keepwindows = false;
     }
         ///////////////////paramètre refresh///////////////////
@@ -308,7 +304,7 @@ void Presenter::MAJLOG(int nbr1, QString *message) {
     }
 }
 
-
-
-
-
+void Presenter::timerinit() {
+    timerjson=new QTimer();
+    timerjson->start(2000);//durée de rafraichissement
+}

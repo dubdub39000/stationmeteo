@@ -3,7 +3,6 @@
 //
 
 #include "View.h"
-#include <QDebug>
 
 
 
@@ -46,6 +45,13 @@ void View::initfenetre() {
         menu->addWidget(setting);
         menu->addWidget(log);
         connection->hide();
+    fenetre->addWidget(mAirspeedGaugetemp,1,0);
+    fenetre->addWidget(mAirspeedGaugepressure,1,1);
+    fenetre->addWidget(mAirspeedGaugehumidity,1,2);
+    fenetre->addWidget(tabgaugetend[0],2,0);
+    fenetre->addWidget(tabgaugetend[1],2,1);
+    fenetre->addWidget(tabgaugetend[2],2,2);
+    fenetre->addWidget(menu, 0, 0);
 
 }
 
@@ -187,7 +193,6 @@ void View::inittendance() {
     for (int i = 0; i < 3; i++) {//la boucle permet la création des trois gauges
 
         tabgaugetend[i]->addArc(55);
-        qDebug() << i;
         tabgaugetend[i]->addBackground(100);
         tabgaugetend[i]->addArc(90)->setColor(Qt::black);
         tabgaugetend[i]->addDegrees(65)->setValueRange(0, 100);//longueur intervalle
@@ -275,12 +280,3 @@ const QVector<QcLabelItem *> &View::getFleche() const {
 QPushButton *View::getLog() const {
     return log;
 }
-
-QGridLayout *View::getFenetre() const {
-    return fenetre;
-}
-
-QToolBar *View::getMenu() const {
-    return menu;
-}
-
