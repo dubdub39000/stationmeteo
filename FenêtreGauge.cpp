@@ -14,9 +14,11 @@ QcGaugeWidget::QcGaugeWidget(QWidget *parent) :
     setMinimumSize(250,250);
 }
 
-QcBackgroundItem *QcGaugeWidget::addBackground(float position)
+QcBackgroundItem *QcGaugeWidget::addBackground(float position, QColor couleur1, QColor couleur2)
 {
     QcBackgroundItem * item = new QcBackgroundItem(this);
+    item->addColor(0.2, couleur1);
+    item->addColor(0.6, couleur2);
     item->setPosition(position);
     mItems.append(item);
     return item;
@@ -287,11 +289,11 @@ QcBackgroundItem::QcBackgroundItem(QObject *parent) :
         QcItem(parent)
 {
     setPosition(88);
-    mPen = Qt::NoPen;
+    mPen = Qt::MPenStyle;
     setPosition(88);
 
-    addColor(0.4,Qt::darkGray);
-    addColor(0.8,Qt::white);
+    //addColor(0.4,Qt::darkGray);
+    //addColor(0.8,Qt::white);
 
 }
 

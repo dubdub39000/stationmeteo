@@ -19,7 +19,7 @@ public:
     explicit View();
     ~View();
     void initfenetre();
-
+    void setbkgrnd(int nbr);
 
     QcGaugeWidget *getMAirspeedGaugetemp() const;
     QcGaugeWidget *getMAirspeedGaugehumidity() const;
@@ -79,8 +79,8 @@ public:
     void connexion(int a); //methode permettant de manipuler le message de perte de connexion.
 
 public slots:
-    void initgauge();
-    void inittendance();
+    void initgauge(int nbr);
+    void inittendance(int nbr);
 };
 
 #endif //STATIONMETEO_VIEW_H

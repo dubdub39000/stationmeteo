@@ -40,7 +40,7 @@ class QCGAUGE_DECL QcGaugeWidget : public QWidget
 public:
     explicit QcGaugeWidget(QWidget *parent = 0);
 
-    QcBackgroundItem* addBackground(float position);
+    QcBackgroundItem* addBackground(float position, QColor couleur1, QColor couleur2);
     QcDegreesItem* addDegrees(float position);
     QcValuesItem* addValues(float position);
     QcArcItem* addArc(float position);

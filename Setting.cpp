@@ -36,8 +36,8 @@ void Setting::inittsetting() {
     valeurtendance->setText("100");// valeur a changer en cas de changement de valeur par défaut
     valeurrafraichissement->setText("20");// valeur a changer en cas de changement de valeur par défaut
     valider->setObjectName("valider");
-    choixcouleur->addItem("grey", *test);
-    choixcouleur->addItem("white",*test);
+    choixcouleur->addItem("light mode", *test);
+    choixcouleur->addItem("black mode",*test);
     annuler->setObjectName("annuler");
     settingview->addWidget(titre,0,1);
     settingview->addWidget(parametre,1,0);
@@ -45,7 +45,7 @@ void Setting::inittsetting() {
     settingview->addWidget(dureetendance,2,0);
     settingview->addWidget(rangetendance,3,0);
     settingview->addWidget(valeurtendance,2,3);
-    settingview->addWidget(dureetendance,4,0);
+    settingview->addWidget(dureerafraichissement,4,0);
     settingview->addWidget(rangerefresh,5,0);
     settingview->addWidget(valider,7,0);
     settingview->addWidget(couleur,6,2);

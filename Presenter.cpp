@@ -239,7 +239,7 @@ void Presenter::MAJparameter() {
         keepwindows = true;// on remet a 1 pour pouvoir revalider arpès une erreur
     }
     ///////////////////paramètre coulor////////////////////
-    if (setting->getChoixcouleur()->currentText() == "grey"){
+    if (setting->getChoixcouleur()->currentText() == "light mode"){
         fenetre->MAJcolor(1);
     } else{
         fenetre->MAJcolor(2);
