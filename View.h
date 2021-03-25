@@ -73,9 +73,7 @@ public:
     const QVector<QcLabelItem *> &getFleche() const;
 
     QPushButton *getSetting() const;
-    QGridLayout *getFenetre() const;
     QPushButton *getLog() const;
-    QToolBar *getMenu() const;
 
     void MAJcolor(int nbr);
     void connexion(int a); //methode permettant de manipuler le message de perte de connexion.
@@ -83,8 +81,6 @@ public:
 public slots:
     void initgauge();
     void inittendance();
-    signals :
-    void resultThread();
 };
 
 #endif //STATIONMETEO_VIEW_H

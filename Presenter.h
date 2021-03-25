@@ -43,6 +43,7 @@ public:
     virtual ~Presenter();
     void MAJprm(jute::jValue v);//met a jour les valeurs des capteurs
     ////////////////gestion de la trame JSON avec exception//////////////////
+    void timerinit();
     void TestConnection(); // envoi la requête http à la database
     void errorconnection(QNetworkReply *networkReply); //methode pour verif erreur de connection avec la database
     void recupJson(QNetworkReply *qNetworkReply);//transmet la réponse de la requete sous frome de String à trameJson
