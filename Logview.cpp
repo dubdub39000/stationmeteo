@@ -12,8 +12,8 @@ Logview::Logview() {
     fermer = new QPushButton("fermer");
     clearflow = new QPushButton("clear");
     clearlogsys = new QPushButton("clear");
-    flow = new QLabel("Trames JSON reçues");
-    erreur = new QLabel("erreur system");
+    flow = new QLabel("Logs reçues");
+    erreur = new QLabel("Logs Appli");
     setLayout(logviewer);
 }
 
