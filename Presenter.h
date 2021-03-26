@@ -16,6 +16,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtNetwork>
 #include <QApplication>
+#include <QSettings>
 
 
 class Presenter : public QObject {
@@ -27,6 +28,7 @@ private:
     Logview *log;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
+    QString ipserveur;
     float Temp;
     float Pressure;
     float Humidity;

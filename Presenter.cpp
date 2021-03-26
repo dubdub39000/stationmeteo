@@ -11,6 +11,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 
+
 using namespace std;
 using namespace jute;
 
@@ -19,8 +20,6 @@ Presenter::Presenter() {
     fenetre = new View();
     setting = new Setting();
     log = new Logview();
-    dureerefresh = 20000;
-    dureetendance = 100;
     /////////////////la fenetre principale////////
     QFuture<void> thread1 = QtConcurrent::run(fenetre, &View::initfenetre);
     thread1.waitForFinished();
@@ -30,9 +29,20 @@ Presenter::Presenter() {
 ////////////////////la fenetre setting/////////////////////////////
     QFuture<void> thread3 = QtConcurrent::run(setting, &Setting::inittsetting);
     thread3.waitForFinished();
-////////////////////
+////////////////////initialization des valeurs avec le fichier ini////////////////////
+    QSettings fichier(QApplication::applicationDirPath() + "/conf.ini", QSettings::IniFormat);//ouverture du fichier de conf
+    if(!QFile::exists(QApplication::applicationDirPath() + "/conf.ini"))
+    {
+        qDebug() << "pas de fichier de conf présent";
+        MAJLOG(2, new QString("fichier init non trouvée"));
+    }
+    qDebug() << fichier.allKeys();
+dureerefresh = fichier.value("Duree/rafraichissement","1000").toInt();
+dureetendance = fichier.value("Duree/tendances","50").toInt();
+ipserveur = fichier.value("Ipserveur/ipadresse", "0.0.0.0").toString();
+
 timerinit(); //initialize le timerjson;
-///////////////////
+/////////////////////////////////////////
     fenetre->show();
     tabtemp = new QVector<float>;
     tabpress = new QVector<float>;
@@ -59,13 +69,12 @@ Presenter::~Presenter() {
     delete  log;
 }
 
-
 /////////////Récupération des données JSON/////////////////////////
 
 void Presenter::TestConnection() {
     manager = new QNetworkAccessManager(this);
-       reply = manager->get(QNetworkRequest(QUrl("http://192.168.104.183/meteo/read.php")));
-        connect(manager, &QNetworkAccessManager::finished, this, &Presenter::errorconnection);
+    reply = manager->get(QNetworkRequest(QUrl("http://" + (ipserveur) +"/meteo/read.php")));
+    connect(manager, &QNetworkAccessManager::finished, this, &Presenter::errorconnection);
     }
 
 void Presenter::errorconnection(QNetworkReply *networkReply) {
