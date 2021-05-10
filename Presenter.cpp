@@ -23,18 +23,21 @@ Presenter::Presenter() {
     /////////////////la fenetre principale////////
     QFuture<void> thread1 = QtConcurrent::run(fenetre, &View::initfenetre);
     thread1.waitForFinished();
+    MAJLOG(2, new QString("initialisation de la fenêtre principale"));
 ///////////////////////la fenetre log////////////////////////////////
     QFuture<void> thread2 = QtConcurrent::run(log , &Logview::initlog);
     thread2.waitForFinished();
+    MAJLOG(2, new QString("initialisation de la fenêtre de log"));
 ////////////////////la fenetre setting/////////////////////////////
     QFuture<void> thread3 = QtConcurrent::run(setting, &Setting::inittsetting);
     thread3.waitForFinished();
+    MAJLOG(2, new QString("initialisation de la fenêtre de setting"));
 ////////////////////initialization des valeurs avec le fichier ini////////////////////
     QSettings fichier(QApplication::applicationDirPath() + "/conf.ini", QSettings::IniFormat);//ouverture du fichier de conf
     if(!QFile::exists(QApplication::applicationDirPath() + "/conf.ini"))
     {
         qDebug() << "pas de fichier de conf présent";
-        MAJLOG(2, new QString("fichier init non trouvée"));
+        MAJLOG(2, new QString("fichier init introuvable"));
     }
     qDebug() << fichier.allKeys();
 dureerefresh = fichier.value("Duree/rafraichissement","1000").toInt();
